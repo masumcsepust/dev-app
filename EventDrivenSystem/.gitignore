@@ -1,0 +1,56 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# npm/node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Angular
+dist/
+.out-tsc/
+.cache/
+
+# ASP.NET
+appsettings.*.json
+
+# User-generated
+*.log
+*.tmp
+*.temp
+*.swp
+*.DS_Store
+
+# OS generated
+Thumbs.db
+Desktop.ini
+
+# JetBrains
+*.iml
+.idea/
+
+# Local test output
+TestResults/
+
+# Jetpack
+wwwroot/lib/
