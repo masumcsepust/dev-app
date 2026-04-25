@@ -1,0 +1,12 @@
+ConsumerService/
+	ConsumerService.csproj
+	Program.cs
+	Worker.cs
+	appsettings.json
+	appsettings.Development.json
+	Properties/
+		launchSettings.json
+	Data/
+		ConsumerDbContext.cs
+	Models/
+	Messaging/

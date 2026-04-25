@@ -1,0 +1,57 @@
+<div class="page-container">
+  <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+      <h1 class="text-gradient">Welcome, {{ currentUser?.firstName }}!</h1>
+      <p class="text-muted">Here's a quick overview of your system</p>
+    </div>
+    <a routerLink="/users" class="btn btn-primary">Manage Users</a>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+    
+    <div class="stat-card glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div class="stat-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
+      <h3 class="text-muted" style="margin-bottom: 0.5rem; font-size: 1rem;">Total Users</h3>
+      <h2 class="text-gradient" style="font-size: 2.5rem; margin: 0;">{{ totalUsers }}</h2>
+    </div>
+
+    <div class="stat-card glass-panel" style="padding: 1.5rem; text-align: center;">
+      <div class="stat-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">✨</div>
+      <h3 class="text-muted" style="margin-bottom: 0.5rem; font-size: 1rem;">New This Week</h3>
+      <h2 class="text-gradient" style="font-size: 2.5rem; margin: 0;">{{ recentUsers }}</h2>
+    </div>
+
+  </div>
+
+  <div *ngIf="!loading && !error" class="dashboard-recent glass-panel" style="margin-top: 2rem; padding: 1.5rem;">
+    <h3 style="margin-bottom: 1rem;">Recently Added Users</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users | slice:0:5">
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.createdAt | date:'mediumDate' }}</td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td colspan="3" class="empty-state">No users found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

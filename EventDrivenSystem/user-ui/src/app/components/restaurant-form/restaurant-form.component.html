@@ -1,0 +1,51 @@
+<div class="page-container">
+  <div class="panel glass-panel restaurant-panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Restaurant creation</p>
+        <h2>Add a new restaurant</h2>
+        <p class="subtitle">Create a new restaurant listing for your CMS portal.</p>
+      </div>
+    </div>
+
+    <form class="entity-form" (ngSubmit)="addRestaurant()">
+      <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+      <label>
+        Restaurant name
+        <input type="text" [(ngModel)]="newRestaurant.name" name="name" placeholder="Enter restaurant name" />
+      </label>
+
+      <label>
+        Cuisine
+        <input type="text" [(ngModel)]="newRestaurant.cuisine" name="cuisine" placeholder="Italian, Sushi, Burgers" />
+      </label>
+
+      <label>
+        Location
+        <input type="text" [(ngModel)]="newRestaurant.location" name="location" placeholder="City or neighborhood" />
+      </label>
+
+      <label>
+        Image URL
+        <input type="text" [(ngModel)]="newRestaurant.image" name="image" placeholder="assets/images/restaurant.png" />
+      </label>
+
+      <button class="btn btn-primary" type="submit">Add Restaurant</button>
+    </form>
+
+    <div class="restaurant-grid">
+      <h3>Existing restaurants</h3>
+      <div class="restaurant-list">
+        <article *ngFor="let restaurant of restaurants" class="restaurant-card">
+          <img [src]="restaurant.image || 'assets/images/pizza_card_1777100990460.png'" alt="{{ restaurant.name }}">
+          <div>
+            <h4>{{ restaurant.name }}</h4>
+            <p>{{ restaurant.cuisine }} · {{ restaurant.location }}</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<section class="container confirmation-page">
+  <div class="confirmation-panel" *ngIf="latestOrder$ | async as order; else noOrder">
+    <div class="confirmation-badge">Order Confirmed</div>
+    <h1>Thanks, {{ order.customerName }}!</h1>
+    <p>Your order <strong>{{ order.orderId }}</strong> is being prepared and will arrive soon.</p>
+    <div class="order-summary">
+      <div class="summary-row">
+        <span>Delivery address</span>
+        <span>{{ order.deliveryAddress }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Order total</span>
+        <span>${{ order.total.toFixed(2) }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Placed at</span>
+        <span>{{ order.placedAt }}</span>
+      </div>
+    </div>
+    <button class="btn btn-primary" type="button" (click)="returnHome()">Back to Home</button>
+  </div>
+  <ng-template #noOrder>
+    <div class="confirmation-panel">
+      <h1>No order found</h1>
+      <p>It looks like you haven’t placed an order yet.</p>
+      <button class="btn btn-primary" type="button" (click)="returnHome()">Start ordering</button>
+    </div>
+  </ng-template>
+</section>

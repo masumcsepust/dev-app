@@ -1,0 +1,17 @@
+<div class="card" *ngIf="restaurant">
+  <div class="card-img-wrapper">
+    <img [src]="restaurant.image" [alt]="restaurant.name" class="card-img">
+    <div class="card-badge">{{ restaurant.deliveryTime }}</div>
+  </div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">{{ restaurant.name }}</h3>
+      <div class="card-rating">
+        <span class="star">⭐</span> {{ restaurant.rating }}
+      </div>
+    </div>
+    <div class="card-tags">
+      <span class="tag" *ngFor="let tag of restaurant.tags">{{ tag }}</span>
+    </div>
+  </div>
+</div>

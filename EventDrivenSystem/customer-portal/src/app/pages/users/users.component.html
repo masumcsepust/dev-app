@@ -1,0 +1,61 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">User management</p>
+    <h1>Create and manage users</h1>
+    <p class="subtitle">Register new users and review customer or restaurant owner profiles.</p>
+  </div>
+</section>
+
+<section class="form-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Create user</p>
+      <h2>New user profile</h2>
+    </div>
+  </div>
+
+  <form class="entity-form" (ngSubmit)="addUser()">
+    <label>
+      Full name
+      <input type="text" [(ngModel)]="newUser.name" name="name" placeholder="Enter full name" />
+    </label>
+
+    <label>
+      Email address
+      <input type="email" [(ngModel)]="newUser.email" name="email" placeholder="Enter email" />
+    </label>
+
+    <label>
+      Role
+      <select [(ngModel)]="newUser.role" name="role">
+        <option>Customer</option>
+        <option>Restaurant Owner</option>
+        <option>Admin</option>
+      </select>
+    </label>
+
+    <button class="btn btn-primary" type="submit">Create User</button>
+  </form>
+</section>
+
+<section class="table-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">User directory</p>
+      <h2>Registered users</h2>
+    </div>
+  </div>
+
+  <div class="user-table">
+    <div class="user-row user-head">
+      <span>Name</span>
+      <span>Email</span>
+      <span>Role</span>
+    </div>
+    <div class="user-row" *ngFor="let user of users">
+      <span>{{ user.name }}</span>
+      <span>{{ user.email }}</span>
+      <span>{{ user.role }}</span>
+    </div>
+  </div>
+</section>

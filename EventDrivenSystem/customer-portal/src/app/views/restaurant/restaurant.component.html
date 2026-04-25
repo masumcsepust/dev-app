@@ -1,0 +1,43 @@
+<div class="container restaurant-page">
+  <div class="restaurant-hero" *ngIf="restaurant">
+    <img [src]="restaurant.image" [alt]="restaurant.name" />
+    <div class="hero-details">
+      <div>
+        <p class="eyebrow">{{ restaurant.cuisine }}</p>
+        <h1>{{ restaurant.name }}</h1>
+        <p>{{ restaurant.description }}</p>
+      </div>
+      <div class="restaurant-meta">
+        <span>⭐ {{ restaurant.rating }}</span>
+        <span>•</span>
+        <span>{{ restaurant.deliveryTime }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-filter">
+    <button
+      *ngFor="let category of categories"
+      type="button"
+      [class.active]="activeCategory === category"
+      (click)="activeCategory = category"
+    >
+      {{ category }}
+    </button>
+  </div>
+
+  <div class="menu-grid">
+    <article class="menu-card" *ngFor="let item of filteredMenu">
+      <div class="menu-card-content">
+        <div>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+        </div>
+        <div>
+          <p class="menu-price">${{ item.price.toFixed(2) }}</p>
+          <button class="btn btn-primary" type="button" (click)="addToCart(item)">Add</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>

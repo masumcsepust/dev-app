@@ -1,0 +1,27 @@
+<div class="dashboard-container">
+  <div class="glass-panel text-center" style="padding: 3rem;">
+    <h2>Welcome to the CMS Dashboard, {{ currentUser?.firstName }}</h2>
+    <p>Manage your restaurant, update menus, and track incoming orders from this portal.</p>
+    
+    <div class="action-grid mt-4">
+      <div class="action-card">
+        <i class="fas fa-store"></i>
+        <h3>My Restaurant</h3>
+        <p>Edit details and working hours</p>
+        <button class="btn btn-outline" routerLink="/cms/restaurants">Manage</button>
+      </div>
+      <div class="action-card">
+        <i class="fas fa-utensils"></i>
+        <h3>Menu Items</h3>
+        <p>Add or update dishes</p>
+        <button class="btn btn-outline" routerLink="/cms/restaurants">Edit Menu</button>
+      </div>
+      <div class="action-card">
+        <i class="fas fa-clipboard-list"></i>
+        <h3>Orders</h3>
+        <p>View and manage orders</p>
+        <button class="btn btn-outline">View Orders</button>
+      </div>
+    </div>
+  </div>
+</div>

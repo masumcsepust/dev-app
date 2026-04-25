@@ -1,0 +1,59 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Restaurant Management</p>
+    <h1>Manage restaurant listings</h1>
+    <p class="subtitle">Create new restaurants, update the menu preview image, and keep the catalog fresh.</p>
+  </div>
+</section>
+
+<section class="form-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Create restaurant</p>
+      <h2>New restaurant entry</h2>
+    </div>
+  </div>
+
+  <form class="entity-form" (ngSubmit)="addRestaurant()">
+    <label>
+      Restaurant name
+      <input type="text" [(ngModel)]="newRestaurant.name" name="name" placeholder="Enter restaurant name" />
+    </label>
+
+    <label>
+      Cuisine
+      <input type="text" [(ngModel)]="newRestaurant.cuisine" name="cuisine" placeholder="Italian, Sushi, Burgers" />
+    </label>
+
+    <label>
+      Location
+      <input type="text" [(ngModel)]="newRestaurant.location" name="location" placeholder="City or neighborhood" />
+    </label>
+
+    <label>
+      Image URL
+      <input type="text" [(ngModel)]="newRestaurant.image" name="image" placeholder="assets/images/..." />
+    </label>
+
+    <button class="btn btn-primary" type="submit">Add Restaurant</button>
+  </form>
+</section>
+
+<section class="table-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Existing restaurants</p>
+      <h2>Restaurant catalog</h2>
+    </div>
+  </div>
+
+  <div class="restaurant-grid">
+    <article class="restaurant-card" *ngFor="let restaurant of restaurants">
+      <img [src]="restaurant.image" alt="{{ restaurant.name }}" />
+      <div class="card-body">
+        <h3>{{ restaurant.name }}</h3>
+        <p>{{ restaurant.cuisine }} · {{ restaurant.location }}</p>
+      </div>
+    </article>
+  </div>
+</section>

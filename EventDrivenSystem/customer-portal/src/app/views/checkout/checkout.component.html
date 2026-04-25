@@ -1,0 +1,62 @@
+<section class="container checkout-page">
+  <div class="checkout-grid">
+    <div class="checkout-form panel">
+      <p class="eyebrow">Checkout</p>
+      <h1>Complete your order</h1>
+      <p class="subtitle">Enter your delivery details and confirm your meal.</p>
+
+      <label>
+        Full name
+        <input type="text" [(ngModel)]="customerName" name="customerName" placeholder="Your name" />
+      </label>
+
+      <label>
+        Delivery address
+        <input type="text" [(ngModel)]="deliveryAddress" name="deliveryAddress" placeholder="123 Main Street" />
+      </label>
+
+      <label>
+        Payment method
+        <select [(ngModel)]="paymentMethod" name="paymentMethod">
+          <option>Credit Card</option>
+          <option>Debit Card</option>
+          <option>Cash on Delivery</option>
+        </select>
+      </label>
+
+      <button class="btn btn-primary" type="button" (click)="placeOrder()">Place Order</button>
+    </div>
+
+    <div class="summary-panel panel" *ngIf="cartItems$ | async as cartItems">
+      <ng-container *ngIf="cartItems.length > 0; else emptyCart">
+        <p class="eyebrow">Order summary</p>
+        <div class="summary-list">
+          <div class="summary-item" *ngFor="let item of cartItems">
+            <div>
+              <h3>{{ item.item.name }}</h3>
+              <p>{{ item.quantity }} × ${{ item.item.price.toFixed(2) }}</p>
+            </div>
+            <p>${{ (item.quantity * item.item.price) | number:'1.2-2' }}</p>
+          </div>
+        </div>
+        <div class="summary-total">
+          <span>Delivery fee</span>
+          <span>$3.99</span>
+        </div>
+        <ng-container *ngIf="subtotal$ | async as subtotal">
+          <div class="summary-total total-row">
+            <span>Total</span>
+            <span>${{ (subtotal + 3.99) | number:'1.2-2' }}</span>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #emptyCart>
+        <div class="empty-order">
+          <p>Your cart is empty.</p>
+          <p>Add a meal from the restaurant menu to complete checkout.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</section>

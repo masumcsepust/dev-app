@@ -1,0 +1,98 @@
+<div class="user-form-container fade-in">
+  <div class="header-actions">
+    <div class="back-link" (click)="onCancel()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Back to Users
+    </div>
+    <h2 class="page-title">{{ isEditMode ? 'Edit User' : 'Create New User' }}</h2>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loader-container">
+    <div class="spinner"></div>
+    <p>Loading user data...</p>
+  </div>
+
+  <div class="form-card" *ngIf="!loading">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="modern-form">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input 
+            type="text" 
+            id="firstName" 
+            formControlName="firstName" 
+            class="form-control" 
+            [class.is-invalid]="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched"
+            placeholder="John"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+            First name is required and must be at least 2 characters.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input 
+            type="text" 
+            id="lastName" 
+            formControlName="lastName" 
+            class="form-control" 
+            [class.is-invalid]="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched"
+            placeholder="Doe"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+            Last name is required and must be at least 2 characters.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            class="form-control" 
+            [class.is-invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+            placeholder="john.doe@example.com"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            Please enter a valid email address.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input 
+            type="tel" 
+            id="phoneNumber" 
+            formControlName="phoneNumber" 
+            class="form-control" 
+            [class.is-invalid]="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched"
+            placeholder="+1 (555) 123-4567"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('phoneNumber')?.invalid && userForm.get('phoneNumber')?.touched">
+            Please enter a valid phone number.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="submitting">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="submitting">
+          <span *ngIf="submitting" class="spinner-small"></span>
+          {{ isEditMode ? 'Save Changes' : 'Create User' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

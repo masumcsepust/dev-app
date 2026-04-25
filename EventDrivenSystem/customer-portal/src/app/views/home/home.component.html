@@ -1,0 +1,49 @@
+<app-hero-banner></app-hero-banner>
+
+<section class="page-intro container">
+  <div class="intro-copy">
+    <p class="eyebrow">Feel the flavor</p>
+    <h1>Order from top restaurants with lightning-fast delivery.</h1>
+    <p>Browse mouth-watering menus, customize your order, and checkout in seconds.</p>
+  </div>
+  <div class="stats-grid">
+    <div>
+      <h2>120+</h2>
+      <p>Restaurants</p>
+    </div>
+    <div>
+      <h2>4.9/5</h2>
+      <p>Average rating</p>
+    </div>
+    <div>
+      <h2>30 min</h2>
+      <p>Delivery time</p>
+    </div>
+  </div>
+</section>
+
+<section class="container restaurant-section">
+  <div class="section-header">
+    <div>
+      <p class="eyebrow">Popular categories</p>
+      <h2>Explore food by category</h2>
+    </div>
+  </div>
+
+  <app-category-carousel [categories]="categories"></app-category-carousel>
+</section>
+
+<section class="container restaurant-section">
+  <div class="section-header">
+    <div>
+      <p class="eyebrow">Top restaurants</p>
+      <h2>Best picks for your next meal</h2>
+    </div>
+  </div>
+
+  <div class="restaurant-grid">
+    <a *ngFor="let restaurant of filteredRestaurants" [routerLink]="['/restaurant', restaurant.id]" class="restaurant-link">
+      <app-restaurant-card [restaurant]="restaurant"></app-restaurant-card>
+    </a>
+  </div>
+</section>

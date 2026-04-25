@@ -1,0 +1,82 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Order flow</p>
+    <h1>Manage orders and fulfillment</h1>
+    <p class="subtitle">Create orders manually and track their status through the CMS interface.</p>
+  </div>
+</section>
+
+<section class="form-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Create order</p>
+      <h2>New order flow</h2>
+    </div>
+  </div>
+
+  <form class="entity-form" (ngSubmit)="addOrder()">
+    <label>
+      Customer
+      <select [(ngModel)]="newOrder.customer" name="customer">
+        <option value="" disabled selected>Select a customer</option>
+        <option *ngFor="let user of users" [value]="user">{{ user }}</option>
+      </select>
+    </label>
+
+    <label>
+      Restaurant
+      <select [(ngModel)]="newOrder.restaurant" name="restaurant">
+        <option value="" disabled selected>Select a restaurant</option>
+        <option *ngFor="let restaurant of restaurants" [value]="restaurant">{{ restaurant }}</option>
+      </select>
+    </label>
+
+    <label>
+      Items
+      <input type="text" [(ngModel)]="newOrder.items" name="items" placeholder="Example: Pepperoni Pizza, Salad" />
+    </label>
+
+    <label>
+      Total
+      <input type="text" [(ngModel)]="newOrder.total" name="total" placeholder="$0.00" />
+    </label>
+
+    <label>
+      Status
+      <select [(ngModel)]="newOrder.status" name="status">
+        <option>Pending</option>
+        <option>Preparing</option>
+        <option>Out for delivery</option>
+        <option>Delivered</option>
+      </select>
+    </label>
+
+    <button class="btn btn-primary" type="submit">Create Order</button>
+  </form>
+</section>
+
+<section class="table-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Order list</p>
+      <h2>Current order flow</h2>
+    </div>
+  </div>
+
+  <div class="order-table">
+    <div class="order-row order-head">
+      <span>Order</span>
+      <span>Customer</span>
+      <span>Restaurant</span>
+      <span>Total</span>
+      <span>Status</span>
+    </div>
+    <div class="order-row" *ngFor="let order of orders">
+      <span>{{ order.id }}</span>
+      <span>{{ order.customer }}</span>
+      <span>{{ order.restaurant }}</span>
+      <span>{{ order.total }}</span>
+      <span class="status-pill">{{ order.status }}</span>
+    </div>
+  </div>
+</section>

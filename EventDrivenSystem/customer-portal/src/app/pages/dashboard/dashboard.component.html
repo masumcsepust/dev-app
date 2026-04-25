@@ -1,0 +1,45 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Admin Dashboard</p>
+    <h1>Restaurant CMS Control Panel</h1>
+    <p class="subtitle">Manage restaurants, orders, and users from one central interface.</p>
+  </div>
+</section>
+
+<section class="stat-grid">
+  <article class="stat-card" *ngFor="let stat of stats">
+    <div class="stat-icon">{{ stat.icon }}</div>
+    <div>
+      <p class="stat-label">{{ stat.label }}</p>
+      <h2>{{ stat.value }}</h2>
+    </div>
+    <a class="stat-action" [routerLink]="stat.route">Manage</a>
+  </article>
+</section>
+
+<section class="table-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Recent orders</p>
+      <h2>Latest activity</h2>
+    </div>
+    <a class="btn btn-primary" routerLink="/orders">View All Orders</a>
+  </div>
+
+  <div class="order-table">
+    <div class="order-row order-head">
+      <span>Order ID</span>
+      <span>Customer</span>
+      <span>Restaurant</span>
+      <span>Total</span>
+      <span>Status</span>
+    </div>
+    <div class="order-row" *ngFor="let order of recentOrders">
+      <span>{{ order.id }}</span>
+      <span>{{ order.customer }}</span>
+      <span>{{ order.restaurant }}</span>
+      <span>{{ order.amount }}</span>
+      <span class="status-pill">{{ order.status }}</span>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/UserService/">
+    <Project Path="UserService/User.API/User.API.csproj" />
+    <Project Path="UserService/User.Core/User.Core.csproj" />
+    <Project Path="UserService/User.Infrastructure/User.Infrastructure.csproj" />
+  </Folder>
+  <Project Path="NotificationService/NotificationService.csproj" />
+</Solution>

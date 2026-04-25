@@ -1,0 +1,30 @@
+<div class="app-shell">
+  <header class="navbar glass-panel">
+    <div class="brand">
+      <span class="brand-icon">🍽️</span>
+      <div>
+        <p class="brand-label">FoodieHub</p>
+        <p class="brand-subtitle">Deliver great meals fast.</p>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/checkout" routerLinkActive="active">Checkout</a>
+      <a routerLink="/confirmation" routerLinkActive="active">Confirmation</a>
+    </nav>
+
+    <div class="action-group">
+      <button class="cart-btn" type="button" (click)="toggleCart()">
+        <span>🛒</span>
+        <span class="cart-count" *ngIf="cartCount$ | async as count">{{ count }}</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-cart-drawer [isOpen]="isCartOpen" (close)="toggleCart()"></app-cart-drawer>
+</div>

@@ -1,0 +1,50 @@
+<div class="drawer-overlay" *ngIf="isOpen" (click)="closeDrawer()"></div>
+<div class="drawer glass-panel" [class.open]="isOpen">
+  <div class="drawer-header">
+    <h2>Your Cart</h2>
+    <button class="close-btn" (click)="closeDrawer()">✕</button>
+  </div>
+  
+  <div class="drawer-content">
+    <ng-container *ngIf="cartItems$ | async as cartItems">
+      <div *ngIf="cartItems.length === 0" class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <p>Your cart is empty</p>
+      </div>
+
+      <div class="cart-items" *ngIf="cartItems.length > 0">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <img [src]="item.item.image" [alt]="item.item.name" class="item-img">
+          <div class="item-details">
+            <h4>{{ item.item.name }}</h4>
+            <p class="item-price">${{ item.item.price }}</p>
+          </div>
+          <div class="item-quantity">
+            <button class="qty-btn" type="button" (click)="updateQuantity(item.item.id, -1)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button class="qty-btn" type="button" (click)="updateQuantity(item.item.id, 1)">+</button>
+          </div>
+          <button class="remove-btn" type="button" (click)="removeItem(item.item.id)">Remove</button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="drawer-footer" *ngIf="subtotal$ | async as subtotal">
+    <div *ngIf="subtotal > 0" class="summary-block">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>${{ subtotal | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Delivery Fee</span>
+        <span>$3.99</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>${{ (subtotal + 3.99) | number:'1.2-2' }}</span>
+      </div>
+      <button class="btn btn-primary checkout-btn" type="button" (click)="checkout()">Checkout</button>
+    </div>
+  </div>
+</div>
