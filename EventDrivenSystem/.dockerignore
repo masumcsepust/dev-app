@@ -1,0 +1,9 @@
+# Root-level .dockerignore (used by UserService which has root context)
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/.angular
+*.md
+.git
+.gitignore

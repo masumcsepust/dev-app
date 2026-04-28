@@ -1,0 +1,69 @@
+<div class="page-wrap">
+  <h1>Submit Prescription</h1>
+
+  <div class="success-card" *ngIf="submitted">
+    <div class="success-icon">✓</div>
+    <h2>Prescription Submitted!</h2>
+    <p>Prescription #{{ submitted.id }} received. Status: <strong>{{ submitted.status }}</strong></p>
+    <p>Our pharmacist will review and contact you shortly.</p>
+    <a routerLink="/pharmacy/home" class="btn-primary">Back to Home</a>
+  </div>
+
+  <div class="form-card" *ngIf="!submitted">
+    <div class="info-banner">
+      Upload your doctor's prescription and select the medicines you need. Our pharmacist will review and approve your request.
+    </div>
+
+    <h2>Your Information</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" [(ngModel)]="form.customerName" placeholder="Your full name" />
+      </div>
+      <div class="form-group">
+        <label>Phone *</label>
+        <input type="text" [(ngModel)]="form.customerPhone" placeholder="01XXXXXXXXX" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="form.customerEmail" placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Doctor Name</label>
+        <input type="text" [(ngModel)]="form.doctorName" placeholder="Dr. Name" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea [(ngModel)]="form.notes" rows="3" placeholder="Additional notes for the pharmacist…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Upload Prescription Image</label>
+      <input type="file" accept="image/*" (change)="onImageChange($event)" />
+      <span *ngIf="uploading" class="uploading">Uploading…</span>
+    </div>
+
+    <h2>Select Prescription Medicines</h2>
+    <p class="sub-hint">Check the medicines you need (optional — our pharmacist can assist).</p>
+    <div class="rx-med-list" *ngIf="rxMedicines.length">
+      <div class="rx-med-item" *ngFor="let med of rxMedicines">
+        <label class="rx-check">
+          <input type="checkbox" [checked]="isSelected(med.id)" (change)="toggleMedicine(med.id)" />
+          <span class="rx-med-name">{{ med.name }}</span>
+          <span class="rx-med-generic">({{ med.genericName }})</span>
+          <span class="rx-med-price">৳ {{ med.price | number:'1.2-2' }}</span>
+        </label>
+        <div class="qty-wrap" *ngIf="isSelected(med.id)">
+          <label>Qty:</label>
+          <input type="number" min="1" [value]="getQty(med.id)" (change)="setQty(med.id, +$any($event.target).value)" class="qty-input" />
+        </div>
+      </div>
+    </div>
+    <p class="no-rx" *ngIf="!rxMedicines.length">No prescription medicines available at the moment.</p>
+
+    <div class="error-msg" *ngIf="error">{{ error }}</div>
+    <button class="btn-submit" (click)="submit()" [disabled]="submitting || uploading">
+      {{ submitting ? 'Submitting…' : 'Submit Prescription' }}
+    </button>
+  </div>
+</div>

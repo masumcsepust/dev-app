@@ -1,0 +1,82 @@
+<!-- ── Page Header ── -->
+<div class="page-banner">
+  <div class="page-container">
+    <h1 class="page-title">All Restaurants</h1>
+    <p class="page-sub">Browse and discover authentic deshi dining experiences</p>
+  </div>
+</div>
+
+<!-- ── Filters ── -->
+<div class="filter-bar">
+  <div class="page-container filter-inner">
+    <div class="search-wrap">
+      <span class="search-ico">&#128269;</span>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Search by name, cuisine or location…"
+        class="filter-input"
+      />
+      <button class="clear-btn" *ngIf="searchQuery" (click)="searchQuery = ''">&times;</button>
+    </div>
+
+    <div class="cuisine-wrap">
+      <select [(ngModel)]="selectedCuisine" class="filter-select">
+        <option value="">All Cuisines</option>
+        <option *ngFor="let c of cuisines" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <button class="btn-clear-all" *ngIf="searchQuery || selectedCuisine" (click)="clearFilters()">
+      Clear Filters
+    </button>
+  </div>
+</div>
+
+<!-- ── Results ── -->
+<div class="page-container results-area">
+
+  <div class="results-meta" *ngIf="!loading">
+    <span *ngIf="filtered.length">Showing <strong>{{ filtered.length }}</strong> restaurant{{ filtered.length !== 1 ? 's' : '' }}</span>
+    <span *ngIf="!filtered.length && (searchQuery || selectedCuisine)">No results for your filters</span>
+  </div>
+
+  <!-- Spinner -->
+  <div class="spinner-wrap" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading restaurants…</p>
+  </div>
+
+  <!-- Grid -->
+  <div class="card-grid" *ngIf="!loading">
+    <article class="r-card" *ngFor="let r of filtered">
+      <div class="r-card-img">
+        <img
+          [src]="r.imageUrl || ''"
+          [alt]="r.name"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+        />
+        <div class="img-fallback" style="display:none"><span>&#127869;</span></div>
+        <span class="cuisine-tag">{{ r.cuisine }}</span>
+      </div>
+      <div class="r-card-body">
+        <h3 class="r-name">{{ r.name }}</h3>
+        <p class="r-addr">&#128205; {{ r.address }}</p>
+        <p class="r-desc">{{ (r.description || 'Authentic flavours waiting to be discovered.') | slice:0:100 }}{{ (r.description || '').length > 100 ? '…' : '' }}</p>
+        <div class="r-actions">
+          <a [routerLink]="['/portal/restaurant', r.id]" class="btn-primary-sm">View Menu</a>
+          <a [routerLink]="['/portal/book', r.id]" class="btn-outline-sm">Book Table</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!filtered.length">
+      <span>&#128270;</span>
+      <h3>No restaurants found</h3>
+      <p *ngIf="searchQuery || selectedCuisine">Try adjusting your search or filters.</p>
+      <p *ngIf="!searchQuery && !selectedCuisine">No restaurants available yet. Check back soon!</p>
+      <button *ngIf="searchQuery || selectedCuisine" class="btn-outline-sm" (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </div>
+</div>

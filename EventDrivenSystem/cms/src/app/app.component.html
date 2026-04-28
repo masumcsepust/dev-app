@@ -1,0 +1,27 @@
+<div class="app-layout">
+  <nav class="navbar" *ngIf="(showGlobalNav$ | async) && (authService.currentUser$ | async) as user">
+    <div class="navbar-brand">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <span class="brand-name">CMS Portal</span>
+    </div>
+    <ul class="nav-links">
+      <li *ngIf="isCms()"><a routerLink="/cms" routerLinkActive="active">Restaurant Dashboard</a></li>
+      <li><a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Profile</a></li>
+      <li><a routerLink="/users" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Users</a></li>
+      <li>
+        <button class="btn btn-outline" (click)="logout()" style="padding: 0.4rem 1rem; margin-left: 1rem;">Logout</button>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

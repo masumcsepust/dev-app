@@ -1,0 +1,33 @@
+.page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.25rem; }
+.top-bar { margin-bottom: 1.5rem; }
+.top-bar h1 { font-size: 1.5rem; font-weight: 800; color: #1a3a30; margin-bottom: 1rem; }
+.filter-row { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+.filter-input, .filter-select {
+  padding: .55rem .85rem; border: 1.5px solid #d4ede5; border-radius: 8px;
+  font-size: .88rem; outline: none; background: #fff;
+}
+.filter-input { min-width: 220px; flex: 1; }
+.filter-input:focus, .filter-select:focus { border-color: #1a7a5e; }
+.btn-search { background: #1a7a5e; color: #fff; border: none; border-radius: 8px; padding: .55rem 1.25rem; font-weight: 600; cursor: pointer; }
+.btn-clear { background: #fff; color: #666; border: 1.5px solid #ddd; border-radius: 8px; padding: .55rem 1rem; cursor: pointer; }
+.loading, .empty { text-align: center; color: #666; padding: 3rem; }
+.med-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap: 1.25rem; }
+.med-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.08); display: flex; flex-direction: column; }
+.med-img-wrap { position: relative; background: #f0f7f4; height: 150px; display: flex; align-items: center; justify-content: center; }
+.med-img { max-height: 130px; max-width: 90%; object-fit: contain; }
+.form-badge { position: absolute; bottom: .5rem; left: .5rem; background: #1a7a5e; color: #fff; font-size: .68rem; padding: .15rem .45rem; border-radius: 20px; font-weight: 600; }
+.rx-badge { position: absolute; top: .5rem; right: .5rem; background: #e53e3e; color: #fff; font-size: .68rem; padding: .15rem .45rem; border-radius: 20px; font-weight: 700; }
+.med-body { padding: .9rem 1rem; flex: 1; }
+.med-name { font-weight: 700; color: #1a3a30; font-size: .95rem; }
+.med-generic { color: #555; font-size: .8rem; margin: .1rem 0; }
+.med-mfr { color: #888; font-size: .75rem; }
+.med-cat { display: inline-block; background: #e8f5f0; color: #1a7a5e; font-size: .72rem; padding: .1rem .5rem; border-radius: 20px; margin: .35rem 0; }
+.med-price { font-size: 1.05rem; font-weight: 700; color: #1a7a5e; margin-top: .35rem; }
+.stock { font-size: .78rem; color: #38a169; margin-top: .15rem; }
+.stock.out { color: #e53e3e; }
+.med-actions { display: flex; gap: .5rem; padding: .75rem 1rem; border-top: 1px solid #f0f7f4; }
+.btn-primary { flex: 1; background: #1a7a5e; color: #fff; border: none; border-radius: 8px; padding: .5rem; font-size: .82rem; font-weight: 600; cursor: pointer; transition: background .18s; }
+.btn-primary:hover:not(:disabled) { background: #0f5c46; }
+.btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+.btn-outline { flex: 1; background: #fff; color: #1a7a5e; border: 1.5px solid #1a7a5e; border-radius: 8px; padding: .5rem; font-size: .82rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: background .18s; }
+.btn-outline:hover { background: #f0f7f4; }

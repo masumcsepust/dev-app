@@ -1,0 +1,136 @@
+/* ── Hero ─────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #052e16 0%, #15803d 50%, #16a34a 100%);
+  color: #fff;
+  padding: 5rem 0 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-inner { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 3rem; position: relative; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--radius-full); padding: .3rem .9rem;
+  font-size: 0.78rem; font-weight: 600; color: #86efac;
+  margin-bottom: 1.25rem;
+}
+.hero h1 {
+  font-size: 3rem; font-weight: 800; line-height: 1.15;
+  margin-bottom: 1.1rem; letter-spacing: -.02em;
+}
+.hero h1 span { color: #86efac; }
+.hero-desc { font-size: 1.05rem; opacity: .85; margin-bottom: 2rem; max-width: 480px; line-height: 1.7; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.hero-actions .btn-primary {
+  background: #fff; color: var(--primary-dark);
+  font-size: 0.95rem; padding: .7rem 1.6rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+.hero-actions .btn-primary:hover { background: #f0fdf4; transform: translateY(-2px); }
+.hero-actions .btn-outline {
+  border-color: rgba(255,255,255,.5); color: #fff;
+  font-size: 0.95rem; padding: .7rem 1.6rem;
+}
+.hero-actions .btn-outline:hover { background: rgba(255,255,255,.1); }
+.hero-visual {
+  font-size: 6rem; line-height: 1;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 2rem;
+  backdrop-filter: blur(8px);
+}
+.hero-stats {
+  display: flex; gap: 2rem; margin-top: 2.5rem;
+  padding-top: 2rem; border-top: 1px solid rgba(255,255,255,.15);
+}
+.hero-stat-val { font-size: 1.4rem; font-weight: 800; color: #86efac; }
+.hero-stat-label { font-size: 0.75rem; opacity: .75; }
+@media (max-width: 768px) { .hero-inner { grid-template-columns: 1fr; } .hero-visual { display: none; } .hero h1 { font-size: 2rem; } }
+
+/* ── Feature pills ────────────────────────────────────── */
+.features-row {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-100);
+  padding: 1.25rem 0;
+}
+.features-inner { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+.feat-pill {
+  display: flex; align-items: center; gap: .6rem;
+  font-size: 0.85rem; font-weight: 500; color: var(--gray-700);
+}
+.feat-pill-icon {
+  width: 34px; height: 34px;
+  background: var(--primary-50);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+
+/* ── Category chips ───────────────────────────────────── */
+.categories-section { margin-top: 2.5rem; }
+.section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.1rem; }
+.categories-wrap { display: flex; flex-wrap: wrap; gap: .6rem; }
+.cat-chip {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: var(--white); border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-full); padding: .45rem 1rem;
+  font-size: 0.83rem; font-weight: 500; color: var(--gray-700);
+  transition: all var(--transition);
+}
+.cat-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-50); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+/* ── Trust strip ──────────────────────────────────────── */
+.trust-strip {
+  background: linear-gradient(90deg, var(--primary-50) 0%, #dcfce7 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--primary-200);
+  padding: 1.75rem 2rem;
+  margin-top: 2.5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+}
+.trust-text h2 { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: .3rem; }
+.trust-text p  { font-size: 0.85rem; color: var(--muted); max-width: 400px; margin-bottom: .8rem; }
+.trust-link { font-size: 0.83rem; padding: .4rem .9rem; }
+.trust-avatars { display: flex; }
+.trust-avatars span { font-size: 2rem; margin-left: -10px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.12)); }
+.trust-avatars span:first-child { margin-left: 0; }
+
+/* ── Medicine cards ───────────────────────────────────── */
+.featured-section { margin-top: 2.5rem; }
+.meds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+.med-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: all var(--transition);
+}
+.med-card:hover { box-shadow: var(--shadow-xl); transform: translateY(-3px); border-color: var(--primary-200); }
+.med-img {
+  height: 150px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--primary-50) 0%, #dcfce7 100%);
+  font-size: 3.5rem; position: relative;
+}
+.med-img img { width: 100%; height: 100%; object-fit: cover; }
+.med-rx-tag {
+  position: absolute; top: .5rem; right: .5rem;
+  background: #fef3c7; color: #92400e;
+  font-size: 0.65rem; font-weight: 700; padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+.med-body { padding: 1rem; display: flex; flex-direction: column; gap: .3rem; flex: 1; }
+.med-form-badge { align-self: flex-start; margin-bottom: .15rem; }
+.med-name { font-weight: 700; font-size: .9rem; color: var(--gray-900); line-height: 1.3; }
+.med-generic { font-size: .75rem; color: var(--muted); }
+.med-price { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-top: .2rem; }
+.med-actions { display: flex; gap: .5rem; margin-top: auto; padding-top: .6rem; }
+.med-actions a, .med-actions button { flex: 1; font-size: .78rem; padding: .45rem .4rem; border-radius: var(--radius); }
+
+.see-all-wrap { text-align: center; margin-top: 2rem; }
+.see-all-wrap a { font-size: .9rem; padding: .6rem 2rem; }

@@ -1,0 +1,32 @@
+<nav class="ph-nav">
+  <div class="ph-nav-inner">
+    <a routerLink="/pharmacy/home" class="ph-brand">
+      <span class="ph-brand-icon">💊</span>
+      <span class="ph-brand-name">PharmaHub</span>
+    </a>
+
+    <button class="ph-menu-btn" (click)="mobileMenuOpen = !mobileMenuOpen">☰</button>
+
+    <div class="ph-nav-links" [class.open]="mobileMenuOpen">
+      <a routerLink="/pharmacy/home" routerLinkActive="active" (click)="mobileMenuOpen=false">Home</a>
+      <a routerLink="/pharmacy/medicines" routerLinkActive="active" (click)="mobileMenuOpen=false">Medicines</a>
+      <a routerLink="/pharmacy/prescription" routerLinkActive="active" (click)="mobileMenuOpen=false">Prescription</a>
+      <a routerLink="/pharmacy/my-orders" routerLinkActive="active" (click)="mobileMenuOpen=false">My Orders</a>
+      <a routerLink="/pharmacy/ai-assistant" routerLinkActive="active" (click)="mobileMenuOpen=false">AI Assistant</a>
+      <a routerLink="/pharmacy/cart" class="cart-link" routerLinkActive="active" (click)="mobileMenuOpen=false">
+        Cart
+        <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="ph-main">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="ph-footer">
+  <p>PharmaHub &copy; 2025 &mdash; Your trusted digital pharmacy</p>
+</footer>
+
+<app-pharmacy-ai-chat></app-pharmacy-ai-chat>

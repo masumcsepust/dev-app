@@ -1,0 +1,67 @@
+<div class="page">
+  <h1>Orders</h1>
+
+  <div class="overlay" *ngIf="selected" (click)="selected = null"></div>
+  <div class="modal" *ngIf="selected">
+    <div class="modal-header">
+      <h2>Order #{{ selected.id }}</h2>
+      <button class="modal-close" (click)="selected = null">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div><span class="dl">Customer</span><span>{{ selected.customerName }}</span></div>
+        <div><span class="dl">Phone</span><span>{{ selected.customerPhone }}</span></div>
+        <div><span class="dl">Email</span><span>{{ selected.customerEmail }}</span></div>
+        <div><span class="dl">Date</span><span>{{ selected.createdAt | date:'medium' }}</span></div>
+        <div class="full"><span class="dl">Delivery Address</span><span>{{ selected.deliveryAddress }}</span></div>
+        <div class="full" *ngIf="selected.notes"><span class="dl">Notes</span><span>{{ selected.notes }}</span></div>
+      </div>
+
+      <h3>Order Items</h3>
+      <div class="order-items">
+        <div class="order-item" *ngFor="let item of selected.items">
+          <span class="item-name">{{ item.medicineName }}</span>
+          <span>× {{ item.quantity }}</span>
+          <span>৳ {{ item.unitPrice | number:'1.2-2' }}</span>
+          <span class="item-sub">৳ {{ item.unitPrice * item.quantity | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="total-row">Total: <strong>৳ {{ selected.totalAmount | number:'1.2-2' }}</strong></div>
+
+      <div class="status-update">
+        <h3>Update Status</h3>
+        <div class="status-row">
+          <select [(ngModel)]="newStatus">
+            <option *ngFor="let s of STATUSES" [value]="s">{{ s }}</option>
+          </select>
+          <button class="btn-update" (click)="updateStatus()" [disabled]="updating || newStatus === selected.status">
+            {{ updating ? 'Updating…' : 'Update' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading orders…</div>
+
+  <div class="table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let o of orders | paginate:page:pageSize">
+          <td>{{ o.id }}</td>
+          <td>{{ o.customerName }}</td>
+          <td>{{ o.customerPhone }}</td>
+          <td>{{ o.items.length }}</td>
+          <td>৳ {{ o.totalAmount | number:'1.2-2' }}</td>
+          <td><span class="status-badge" [ngClass]="statusClass(o.status)">{{ o.status }}</span></td>
+          <td>{{ o.createdAt | date:'shortDate' }}</td>
+          <td><button class="btn-view" (click)="openOrder(o)">Manage</button></td>
+        </tr>
+      </tbody>
+    </table>
+<app-pagination [total]="orders.length" [page]="page" [pageSize]="pageSize" (pageChange)="page=$event" (pageSizeChange)="pageSize=$event;page=1"/>
+
+    <p class="empty" *ngIf="orders.length === 0">No orders yet.</p>
+  </div>
+</div>

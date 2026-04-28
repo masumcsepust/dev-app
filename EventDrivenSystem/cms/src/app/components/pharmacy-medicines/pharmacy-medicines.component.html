@@ -1,0 +1,54 @@
+<div class="page-wrap">
+  <div class="top-bar">
+    <h1>All Medicines</h1>
+    <div class="filter-row">
+      <input class="filter-input" type="text" placeholder="Search medicines…"
+        [(ngModel)]="search" (keydown.enter)="load()" />
+      <select class="filter-select" [(ngModel)]="selectedCategory" (change)="load()">
+        <option [ngValue]="null">All Categories</option>
+        <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+      </select>
+      <select class="filter-select" [(ngModel)]="rxFilter" (change)="load()">
+        <option [ngValue]="null">All</option>
+        <option [ngValue]="false">OTC (No Rx)</option>
+        <option [ngValue]="true">Prescription Only</option>
+      </select>
+      <button class="btn-search" (click)="load()">Search</button>
+      <button class="btn-clear" (click)="clearFilters()">Clear</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading medicines…</div>
+
+  <div class="empty" *ngIf="!loading && medicines.length === 0">
+    <p>No medicines found. Try different filters.</p>
+  </div>
+
+  <div class="med-grid" *ngIf="!loading && medicines.length > 0">
+    <div class="med-card" *ngFor="let med of medicines">
+      <div class="med-img-wrap">
+        <img [src]="med.imageUrl" [alt]="med.name" class="med-img" onerror="this.src=''" />
+        <span class="form-badge">{{ med.form }}</span>
+        <span class="rx-badge" *ngIf="med.requiresPrescription">Rx</span>
+      </div>
+      <div class="med-body">
+        <div class="med-name">{{ med.name }}</div>
+        <div class="med-generic">{{ med.genericName }}</div>
+        <div class="med-mfr">{{ med.manufacturer }}</div>
+        <div class="med-cat" *ngIf="med.category">{{ med.category.name }}</div>
+        <div class="med-price">৳ {{ med.price | number:'1.2-2' }}</div>
+        <div class="stock" [class.out]="med.stockQuantity === 0">
+          {{ med.stockQuantity > 0 ? 'In Stock (' + med.stockQuantity + ')' : 'Out of Stock' }}
+        </div>
+      </div>
+      <div class="med-actions">
+        <a [routerLink]="['/pharmacy/medicine', med.id]" class="btn-outline">Details</a>
+        <button class="btn-primary"
+          (click)="addToCart(med)"
+          [disabled]="med.stockQuantity === 0 || med.requiresPrescription">
+          {{ addedId === med.id ? 'Added!' : (med.requiresPrescription ? 'Rx Only' : 'Add to Cart') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Medicine Categories</h1>
+    <button class="btn-add" (click)="cancelEdit(); editId = -1">+ Add Category</button>
+  </div>
+
+  <div class="form-card" *ngIf="editId !== null">
+    <h2>{{ editId === -1 ? 'New Category' : 'Edit Category' }}</h2>
+    <div class="form-group"><label>Name *</label><input type="text" [(ngModel)]="form.name" placeholder="Category name" /></div>
+    <div class="form-group"><label>Description</label><input type="text" [(ngModel)]="form.description" placeholder="Brief description" /></div>
+    <div class="error-msg" *ngIf="error">{{ error }}</div>
+    <div class="form-actions">
+      <button class="btn-save" (click)="save()" [disabled]="saving">{{ saving ? 'Saving…' : 'Save' }}</button>
+      <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <div class="table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Name</th><th>Description</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let cat of categories | paginate:page:pageSize">
+          <td>{{ cat.id }}</td>
+          <td><strong>{{ cat.name }}</strong></td>
+          <td>{{ cat.description }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="startEdit(cat)">Edit</button>
+            <button class="btn-del" (click)="delete(cat.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+<app-pagination [total]="categories.length" [page]="page" [pageSize]="pageSize" (pageChange)="page=$event" (pageSizeChange)="pageSize=$event;page=1"/>
+
+    <p class="empty" *ngIf="categories.length === 0">No categories yet.</p>
+  </div>
+</div>

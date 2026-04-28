@@ -1,0 +1,202 @@
+<div class="page-container">
+  <div class="restaurant-panel">
+    <h2>Restaurant CMS Dashboard</h2>
+
+    <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+    <section class="entity-form">
+      <h3>Create New Restaurant</h3>
+      <label>
+        Restaurant Name
+        <input type="text" [(ngModel)]="newRestaurant.name" name="restaurantName" placeholder="Bd Deshi Food House" />
+      </label>
+
+      <label>
+        Cuisine
+        <input type="text" [(ngModel)]="newRestaurant.cuisine" name="cuisine" placeholder="Bangladeshi" />
+      </label>
+
+      <label>
+        Address
+        <input type="text" [(ngModel)]="newRestaurant.address" name="address" placeholder="Dhaka, Bangladesh" />
+      </label>
+
+      <label>
+        Image URL
+        <input type="text" [(ngModel)]="newRestaurant.image" name="image" placeholder="https://..." />
+      </label>
+
+      <label>
+        Description
+        <input type="text" [(ngModel)]="newRestaurant.description" name="description" placeholder="A deshi restaurant with authentic food" />
+      </label>
+
+      <button class="btn" type="button" (click)="addRestaurant()">Create restaurant</button>
+    </section>
+
+    <section class="restaurant-list">
+      <h3>Restaurants</h3>
+      <label>
+        Choose restaurant
+        <select [(ngModel)]="selectedRestaurantId" name="selectedRestaurant" (change)="onRestaurantSelection()">
+          <option [ngValue]="null">Select a restaurant</option>
+          <option *ngFor="let restaurant of restaurants" [ngValue]="restaurant.id">
+            {{ restaurant.name }} • {{ restaurant.cuisine }}
+          </option>
+        </select>
+      </label>
+
+      <article *ngFor="let restaurant of restaurants" class="restaurant-card">
+        <div>
+          <h4>{{ restaurant.name }}</h4>
+          <p>{{ restaurant.cuisine || 'Deshi' }} · {{ restaurant.address }}</p>
+          <p>{{ restaurant.description || 'CMS-managed restaurant' }}</p>
+          <button class="btn btn-outline" type="button" (click)="selectRestaurant(restaurant.id)">Manage</button>
+        </div>
+        <img *ngIf="restaurant.image" [src]="restaurant.image" alt="{{ restaurant.name }}" />
+      </article>
+    </section>
+
+    <section *ngIf="selectedRestaurant" class="restaurant-grid">
+      <h3>Managing: {{ selectedRestaurant.name }}</h3>
+      <div class="grid-layout">
+        <div class="entity-section">
+          <h4>Categories</h4>
+          <div class="entity-form">
+            <label>
+              Category name
+              <input type="text" [(ngModel)]="newCategory.name" name="categoryName" placeholder="Lunch / Dessert" />
+            </label>
+            <label>
+              Description
+              <input type="text" [(ngModel)]="newCategory.description" name="categoryDescription" placeholder="Category description" />
+            </label>
+            <button class="btn btn-outline" type="button" (click)="addCategory()">Save category</button>
+          </div>
+          <ul class="section-list">
+            <li *ngFor="let category of categories">
+              <strong>{{ category.name }}</strong>
+              <span>{{ category.description }}</span>
+              <button class="btn btn-round" type="button" (click)="deleteCategory(category.id)">Delete</button>
+            </li>
+            <li *ngIf="!categories.length">No categories created yet.</li>
+          </ul>
+        </div>
+
+        <div class="entity-section">
+          <h4>Menu Items</h4>
+          <div class="entity-form">
+            <label>
+              Item name
+              <input type="text" [(ngModel)]="newMenuItem.name" name="menuItemName" placeholder="Bhuna Chicken" />
+            </label>
+            <label>
+              Description
+              <input type="text" [(ngModel)]="newMenuItem.description" name="menuItemDescription" placeholder="Spicy deshi curry" />
+            </label>
+            <label>
+              Price
+              <input type="number" [(ngModel)]="newMenuItem.price" name="menuItemPrice" placeholder="250" />
+            </label>
+            <label>
+              Category
+              <select [(ngModel)]="newMenuItem.categoryId" name="menuItemCategory">
+                <option *ngFor="let category of categories" [ngValue]="category.id">{{ category.name }}</option>
+              </select>
+            </label>
+            <label>
+              Image URL
+              <input type="text" [(ngModel)]="newMenuItem.imageUrl" name="menuItemImage" placeholder="https://..." />
+            </label>
+            <button class="btn btn-outline" type="button" (click)="addMenuItem()">Add menu item</button>
+          </div>
+          <ul class="section-list">
+            <li *ngFor="let item of menuItems">
+              <strong>{{ item.name }}</strong>
+              <small>{{ item.category?.name || 'Uncategorized' }}</small>
+              <span>{{ item.description }}</span>
+              <span>৳{{ item.price }}</span>
+              <button class="btn btn-round" type="button" (click)="deleteMenuItem(item.id)">Delete</button>
+            </li>
+            <li *ngIf="!menuItems.length">No menu items yet.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-layout">
+        <div class="entity-section">
+          <h4>Tables</h4>
+          <div class="entity-form">
+            <label>
+              Table number
+              <input type="number" [(ngModel)]="newTable.tableNumber" name="tableNumber" placeholder="1" />
+            </label>
+            <label>
+              Seats
+              <input type="number" [(ngModel)]="newTable.seats" name="tableSeats" placeholder="4" />
+            </label>
+            <label>
+              Available
+              <select [(ngModel)]="newTable.isAvailable" name="tableAvailability">
+                <option [ngValue]="true">Yes</option>
+                <option [ngValue]="false">No</option>
+              </select>
+            </label>
+            <button class="btn btn-outline" type="button" (click)="addTable()">Create table</button>
+          </div>
+          <ul class="section-list">
+            <li *ngFor="let table of tables">
+              <strong>{{ table.tableNumber }}</strong>
+              <span>Seats: {{ table.seatingCapacity }}</span>
+              <span>Status: {{ table.status }}</span>
+              <button class="btn btn-round" type="button" (click)="deleteTable(table.id)">Remove</button>
+            </li>
+            <li *ngIf="!tables.length">No tables defined yet.</li>
+          </ul>
+        </div>
+
+        <div class="entity-section">
+          <h4>Reservations</h4>
+          <div class="entity-form">
+            <label>
+              Customer
+              <input type="text" [(ngModel)]="newReservation.customerName" name="reservationCustomerName" placeholder="Customer name" />
+            </label>
+            <label>
+              Phone
+              <input type="text" [(ngModel)]="newReservation.customerPhone" name="reservationCustomerPhone" placeholder="017xxxxxxxx" />
+            </label>
+            <label>
+              Reservation time
+              <input type="datetime-local" [(ngModel)]="newReservation.reservationDateTime" name="reservationDateTime" />
+            </label>
+            <label>
+              Party size
+              <input type="number" [(ngModel)]="newReservation.guestsCount" name="reservationPartySize" placeholder="3" />
+            </label>
+            <label>
+              Table
+              <select [(ngModel)]="newReservation.tableId" name="reservationTable">
+                <option [ngValue]="0">Select a table</option>
+                <option *ngFor="let table of tables" [ngValue]="table.id">{{ table.tableNumber }} ({{ table.seats }} seats)</option>
+              </select>
+            </label>
+            <button class="btn btn-outline" type="button" (click)="addReservation()">Book reservation</button>
+          </div>
+          <ul class="section-list">
+            <li *ngFor="let reservation of reservations">
+              <strong>{{ reservation.customerName }}</strong>
+              <span>{{ reservation.customerPhone }}</span>
+              <span>{{ reservation.reservationDateTime | date:'short' }}</span>
+              <span>Party of {{ reservation.guestsCount }}</span>
+              <span>Table: {{ reservation.table?.tableNumber || reservation.tableId }}</span>
+              <button class="btn btn-round" type="button" (click)="cancelReservation(reservation.id)">Cancel</button>
+            </li>
+            <li *ngIf="!reservations.length">No reservations yet.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

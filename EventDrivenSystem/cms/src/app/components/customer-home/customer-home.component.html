@@ -1,0 +1,139 @@
+<!-- ── Hero Section ── -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-pill">&#127869; Authentic Bangladeshi Food</span>
+    <h1 class="hero-title">
+      Discover & Reserve<br>
+      <span class="accent">Your Perfect Table</span>
+    </h1>
+    <p class="hero-sub">
+      Explore the finest deshi restaurants, browse menus and book a table in seconds.
+    </p>
+    <form class="search-bar" (ngSubmit)="search()">
+      <span class="search-ico">&#128269;</span>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        name="q"
+        placeholder="Search restaurants, cuisine, location…"
+        autocomplete="off"
+      />
+      <button type="submit" class="btn-search">Find Food</button>
+    </form>
+  </div>
+</section>
+
+<!-- ── Stats Bar ── -->
+<section class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <strong>{{ restaurants.length || '10' }}+</strong>
+      <span>Restaurants</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <strong>100+</strong>
+      <span>Menu Items</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <strong>Easy</strong>
+      <span>Table Booking</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <strong>&#11088; 5.0</strong>
+      <span>Authentic Taste</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Featured Restaurants ── -->
+<section class="section">
+  <div class="section-container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Featured Restaurants</h2>
+        <p class="section-sub">Hand-picked favourites for the best experience</p>
+      </div>
+      <a routerLink="/portal/restaurants" class="link-all">View All &rarr;</a>
+    </div>
+
+    <div class="spinner-wrap" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading restaurants…</p>
+    </div>
+
+    <div class="card-grid" *ngIf="!loading">
+      <article class="r-card" *ngFor="let r of featured">
+        <div class="r-card-img">
+          <img
+            [src]="r.imageUrl || ''"
+            [alt]="r.name"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+          />
+          <div class="img-fallback" style="display:none">
+            <span>&#127869;</span>
+          </div>
+          <span class="cuisine-tag">{{ r.cuisine }}</span>
+        </div>
+        <div class="r-card-body">
+          <h3 class="r-name">{{ r.name }}</h3>
+          <p class="r-addr">&#128205; {{ r.address }}</p>
+          <p class="r-desc">{{ (r.description || 'Delicious authentic food awaits you.') | slice:0:90 }}{{ (r.description || '').length > 90 ? '…' : '' }}</p>
+          <div class="r-actions">
+            <a [routerLink]="['/portal/restaurant', r.id]" class="btn-primary-sm">View Menu</a>
+            <a [routerLink]="['/portal/book', r.id]" class="btn-outline-sm">Book Table</a>
+          </div>
+        </div>
+      </article>
+
+      <div class="empty-state" *ngIf="!featured.length">
+        <span>&#127869;</span>
+        <p>No restaurants yet. Check back soon!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section class="how-section">
+  <div class="section-container">
+    <div class="how-head">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-sub">Reserve your table in three simple steps</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">&#128269;</div>
+        <h3>Browse</h3>
+        <p>Explore restaurants and menus to find exactly what you're craving today.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">&#128197;</div>
+        <h3>Reserve</h3>
+        <p>Pick your date, time, table and number of guests. Book in under a minute.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">&#127859;</div>
+        <h3>Enjoy</h3>
+        <p>Arrive, be seated and savour authentic Bangladeshi cuisine at its finest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Banner ── -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Hungry? Your table is waiting.</h2>
+    <p>Browse all restaurants and make your reservation today.</p>
+    <a routerLink="/portal/restaurants" class="btn-cta">Explore Restaurants</a>
+  </div>
+</section>

@@ -1,0 +1,80 @@
+<div class="page container">
+  <h1 class="page-title">Prescriptions</h1>
+
+  <div class="tabs">
+    <button [class.active]="tab === 'submit'" (click)="tab = 'submit'">Submit Prescription</button>
+    <button [class.active]="tab === 'track'" (click)="tab = 'track'">Track Status</button>
+  </div>
+
+  <!-- Submit Tab -->
+  <div class="tab-content card" *ngIf="tab === 'submit'">
+    <div class="success-msg" *ngIf="success">
+      <div style="font-size:2.5rem">✅</div>
+      <h3>Prescription submitted!</h3>
+      <p>We'll review your prescription and contact you shortly.</p>
+      <button class="btn-outline" (click)="success=false">Submit Another</button>
+    </div>
+
+    <form (ngSubmit)="submit()" *ngIf="!success">
+      <h2>Upload Your Prescription</h2>
+
+      <div class="field">
+        <label>Patient Name *</label>
+        <input type="text" [(ngModel)]="form.patientName" name="patientName" required placeholder="Full name">
+      </div>
+      <div class="field">
+        <label>Phone Number *</label>
+        <input type="tel" [(ngModel)]="form.patientPhone" name="patientPhone" required placeholder="+880…">
+      </div>
+      <div class="field">
+        <label>Doctor's Name</label>
+        <input type="text" [(ngModel)]="form.doctorName" name="doctorName" placeholder="Dr. Name">
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea [(ngModel)]="form.notes" name="notes" rows="2" placeholder="Any additional notes…"></textarea>
+      </div>
+      <div class="field">
+        <label>Prescription Image *</label>
+        <div class="upload-area" (click)="fileInput.click()">
+          <img *ngIf="imagePreview" [src]="imagePreview" alt="preview">
+          <div *ngIf="!imagePreview" class="upload-placeholder">
+            <span>📎</span>
+            <span>Click to upload image (JPG, PNG, PDF)</span>
+          </div>
+        </div>
+        <input #fileInput type="file" accept="image/*,.pdf" (change)="onFile($event)" hidden>
+      </div>
+
+      <div class="error" *ngIf="error">{{ error }}</div>
+      <button type="submit" class="btn-primary submit-btn" [disabled]="loading">
+        {{ loading ? 'Submitting…' : 'Submit Prescription' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Track Tab -->
+  <div class="tab-content card" *ngIf="tab === 'track'">
+    <h2>Track Your Prescriptions</h2>
+    <div class="search-row">
+      <input type="tel" [(ngModel)]="trackPhone" placeholder="+880… (same as submitted)" (keyup.enter)="trackPrescriptions()">
+      <button class="btn-primary" (click)="trackPrescriptions()">Search</button>
+    </div>
+    <div class="loading" *ngIf="trackLoading">Loading…</div>
+    <div class="rx-list" *ngIf="!trackLoading">
+      <div class="empty" *ngIf="prescriptions.length === 0 && trackPhone">No prescriptions found.</div>
+      <div class="rx-card" *ngFor="let p of prescriptions">
+        <div class="rx-header">
+          <span>#{{ p.id }} — {{ p.patientName }}</span>
+          <span class="badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span>
+        </div>
+        <div class="rx-meta">
+          <span>Dr. {{ p.doctorName }}</span>
+          <span>{{ p.createdAt | date:'mediumDate' }}</span>
+        </div>
+        <div class="rx-notes" *ngIf="p.notes">{{ p.notes }}</div>
+        <a *ngIf="p.imageUrl" [href]="'http://localhost:5091' + p.imageUrl" target="_blank" class="rx-img-link">View Image</a>
+      </div>
+    </div>
+  </div>
+</div>

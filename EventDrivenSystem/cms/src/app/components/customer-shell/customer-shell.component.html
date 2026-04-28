@@ -1,0 +1,51 @@
+<div class="portal-wrap">
+
+  <!-- ── Top Navigation ── -->
+  <header class="portal-header">
+    <nav class="portal-nav">
+      <a class="brand" routerLink="/portal/home">
+        <span class="brand-icon">&#127869;</span>
+        <span class="brand-text">DeshiFood</span>
+      </a>
+
+      <ul class="nav-links" [class.open]="mobileMenuOpen">
+        <li><a routerLink="/portal/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="mobileMenuOpen=false">Home</a></li>
+        <li><a routerLink="/portal/restaurants" routerLinkActive="active" (click)="mobileMenuOpen=false">Restaurants</a></li>
+        <li><a routerLink="/portal/my-reservations" routerLinkActive="active" (click)="mobileMenuOpen=false">My Reservations</a></li>
+        <li><a routerLink="/portal/ai-assistant" routerLinkActive="active" (click)="mobileMenuOpen=false">🤖 AI Assistant</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="user-chip">
+          <div class="avatar">{{ initials }}</div>
+          <span class="user-name">{{ currentUser?.firstName }}</span>
+        </div>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+        <button class="hamburger" (click)="mobileMenuOpen = !mobileMenuOpen" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── Page Content ── -->
+  <main class="portal-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- ── AI Chat Widget ── -->
+  <app-ai-chat></app-ai-chat>
+
+  <!-- ── Footer ── -->
+  <footer class="portal-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-icon">&#127869;</span>
+        <span class="brand-text">DeshiFood</span>
+      </div>
+      <p class="footer-copy">Authentic Bangladeshi Cuisine &nbsp;&bull;&nbsp; Taste the Tradition</p>
+      <p class="footer-sub">&copy; 2025 DeshiFood. All rights reserved.</p>
+    </div>
+  </footer>
+
+</div>

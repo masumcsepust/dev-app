@@ -150,8 +150,13 @@ public class AuthService : IAuthService
         var accessToken = GenerateJwtToken(user);
         var refreshToken = GenerateRefreshToken();
 
+        var jwtSettings = _configuration.GetSection("Jwt");
+        var refreshTokenExpiryDays = int.TryParse(jwtSettings["RefreshTokenExpiryDays"], out var expiryDays)
+            ? expiryDays
+            : 365;
+
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenExpiryDays);
         
         await _context.SaveChangesAsync();
 
@@ -165,7 +170,11 @@ public class AuthService : IAuthService
     private string GenerateJwtToken(UserEntity user)
     {
         var jwtSettings = _configuration.GetSection("Jwt");
-        var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+
+        var accessTokenExpirationMinutes = int.TryParse(jwtSettings["AccessTokenExpirationMinutes"], out var minutes)
+            ? minutes
+            : 43200;
 
         var claims = new[]
         {
@@ -179,7 +188,7 @@ public class AuthService : IAuthService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(15),
+            Expires = DateTime.UtcNow.AddMinutes(accessTokenExpirationMinutes),
             Issuer = jwtSettings["Issuer"],
             Audience = jwtSettings["Audience"],
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -208,7 +217,7 @@ public class AuthService : IAuthService
             ValidateIssuer = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings["Key"]!)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
             ValidateLifetime = false // Here we are saying that we don't care about the token's expiration date
         };
 

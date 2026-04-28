@@ -1,0 +1,34 @@
+.back-link { display: inline-block; color: var(--primary); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.back-link:hover { text-decoration: underline; }
+
+.detail-wrap { display: grid; grid-template-columns: 1fr 1.6fr; gap: 2.5rem; align-items: start; }
+@media (max-width: 700px) { .detail-wrap { grid-template-columns: 1fr; } }
+
+.detail-img {
+  aspect-ratio: 1; max-width: 400px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); border-radius: var(--radius);
+  font-size: 6rem; overflow: hidden;
+}
+.detail-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.top-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.med-name { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.25rem; }
+.med-generic, .med-mfr { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.15rem; }
+
+.price-row { display: flex; align-items: center; gap: 1.5rem; margin: 1rem 0; }
+.price { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+.stock-info { font-size: 0.85rem; color: var(--text-muted); }
+
+.info-block { margin: 0.75rem 0; }
+.info-block h3 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin-bottom: 0.25rem; }
+.info-block p { font-size: 0.9rem; }
+
+.cart-row { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+.qty-ctrl { display: flex; align-items: center; }
+.qty-ctrl button { width: 34px; height: 34px; background: var(--accent); border: 1.5px solid var(--border); border-radius: 6px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+.qty-ctrl input { width: 56px; text-align: center; border-left: none; border-right: none; border-radius: 0; height: 34px; }
+.add-btn { padding: 0.6rem 1.5rem; font-size: 1rem; }
+
+.rx-notice { margin-top: 1.5rem; background: #fff7ed; border: 1.5px solid #fed7aa; border-radius: var(--radius); padding: 1rem; }
+.rx-notice p { margin-bottom: 0.75rem; font-size: 0.9rem; color: #92400e; }

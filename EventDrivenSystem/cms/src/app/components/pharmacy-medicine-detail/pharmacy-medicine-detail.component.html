@@ -1,0 +1,62 @@
+<div class="page-wrap">
+  <a routerLink="/pharmacy/medicines" class="back-link">← Back to Medicines</a>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <div class="detail-card" *ngIf="medicine">
+    <div class="detail-left">
+      <div class="detail-img-wrap">
+        <img [src]="medicine.imageUrl" [alt]="medicine.name" class="detail-img" onerror="this.src=''" />
+      </div>
+      <div class="badges">
+        <span class="badge form">{{ medicine.form }}</span>
+        <span class="badge rx" *ngIf="medicine.requiresPrescription">Prescription Required</span>
+        <span class="badge otc" *ngIf="!medicine.requiresPrescription">OTC</span>
+        <span class="badge out" *ngIf="!medicine.isAvailable">Unavailable</span>
+      </div>
+    </div>
+
+    <div class="detail-right">
+      <h1 class="med-name">{{ medicine.name }}</h1>
+      <p class="med-generic">Generic: <strong>{{ medicine.genericName }}</strong></p>
+      <p class="med-mfr">By {{ medicine.manufacturer }}</p>
+      <p class="med-cat" *ngIf="medicine.category">Category: {{ medicine.category.name }}</p>
+
+      <div class="price-row">
+        <span class="price">৳ {{ medicine.price | number:'1.2-2' }}</span>
+        <span class="stock" [class.out]="medicine.stockQuantity === 0">
+          {{ medicine.stockQuantity > 0 ? 'In Stock (' + medicine.stockQuantity + ' units)' : 'Out of Stock' }}
+        </span>
+      </div>
+
+      <div class="info-block" *ngIf="medicine.description">
+        <h3>Description</h3>
+        <p>{{ medicine.description }}</p>
+      </div>
+      <div class="info-block" *ngIf="medicine.dosage">
+        <h3>Dosage</h3>
+        <p>{{ medicine.dosage }}</p>
+      </div>
+      <div class="info-block warning" *ngIf="medicine.sideEffects">
+        <h3>Side Effects</h3>
+        <p>{{ medicine.sideEffects }}</p>
+      </div>
+
+      <div class="rx-warning" *ngIf="medicine.requiresPrescription">
+        This medicine requires a valid prescription.
+        <a routerLink="/pharmacy/prescription">Submit Prescription →</a>
+      </div>
+
+      <div class="add-cart" *ngIf="!medicine.requiresPrescription && medicine.stockQuantity > 0">
+        <div class="qty-row">
+          <button class="qty-btn" (click)="qty = qty > 1 ? qty - 1 : 1">−</button>
+          <span class="qty-val">{{ qty }}</span>
+          <button class="qty-btn" (click)="qty = qty < medicine.stockQuantity ? qty + 1 : qty">+</button>
+        </div>
+        <button class="btn-cart" (click)="addToCart()" [class.added]="added">
+          {{ added ? '✓ Added to Cart!' : 'Add to Cart' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

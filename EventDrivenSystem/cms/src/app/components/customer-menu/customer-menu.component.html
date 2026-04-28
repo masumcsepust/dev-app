@@ -1,0 +1,107 @@
+<!-- Loading -->
+<div class="spinner-page" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Loading menu…</p>
+</div>
+
+<!-- Error -->
+<div class="error-page" *ngIf="!loading && error">
+  <span>&#128577;</span>
+  <p>{{ error }}</p>
+  <a routerLink="/portal/restaurants" class="btn-outline-sm">Back to Restaurants</a>
+</div>
+
+<!-- Content -->
+<div *ngIf="!loading && !error && restaurant">
+
+  <!-- ── Restaurant Hero Banner ── -->
+  <div class="r-banner">
+    <div class="r-banner-bg" [style.backgroundImage]="restaurant.imageUrl ? 'url(' + restaurant.imageUrl + ')' : 'none'">
+      <div class="r-banner-overlay"></div>
+    </div>
+    <div class="r-banner-content page-container">
+      <a routerLink="/portal/restaurants" class="back-link">&#8592; All Restaurants</a>
+      <div class="r-info">
+        <div class="r-info-text">
+          <span class="cuisine-pill">{{ restaurant.cuisine }}</span>
+          <h1 class="r-title">{{ restaurant.name }}</h1>
+          <p class="r-address">&#128205; {{ restaurant.address }}</p>
+          <p class="r-description" *ngIf="restaurant.description">{{ restaurant.description }}</p>
+        </div>
+        <a [routerLink]="['/portal/book', restaurant.id]" class="btn-book-hero">
+          &#128197; Book a Table
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Category Tabs ── -->
+  <div class="category-bar">
+    <div class="page-container category-bar-inner">
+      <button
+        class="cat-tab"
+        [class.active]="selectedCategoryId === null"
+        (click)="selectCategory(null)"
+      >
+        All Items
+        <span class="cat-count">{{ menuItems.length }}</span>
+      </button>
+      <button
+        class="cat-tab"
+        *ngFor="let cat of categories"
+        [class.active]="selectedCategoryId === cat.id"
+        (click)="selectCategory(cat.id)"
+      >
+        {{ cat.name }}
+        <span class="cat-count">{{ countByCategory(cat.id) }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Menu Items ── -->
+  <div class="page-container menu-area">
+
+    <div class="results-meta">
+      <strong>{{ filteredItems.length }}</strong> item{{ filteredItems.length !== 1 ? 's' : '' }}
+      {{ selectedCategoryId !== null ? 'in ' + getCategoryName(selectedCategoryId) : 'on the menu' }}
+    </div>
+
+    <div class="menu-grid" *ngIf="filteredItems.length">
+      <article class="menu-card" *ngFor="let item of filteredItems">
+        <div class="menu-card-img">
+          <img
+            [src]="item.imageUrl || ''"
+            [alt]="item.name"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+          />
+          <div class="img-fallback" style="display:none"><span>&#127859;</span></div>
+        </div>
+        <div class="menu-card-body">
+          <div class="menu-card-top">
+            <div>
+              <span class="item-cat-tag" *ngIf="item.categoryId">{{ getCategoryName(item.categoryId) }}</span>
+              <h3 class="item-name">{{ item.name }}</h3>
+            </div>
+            <div class="item-price">&#2547; {{ item.price | number:'1.0-0' }}</div>
+          </div>
+          <p class="item-desc" *ngIf="item.description">{{ item.description | slice:0:80 }}{{ item.description.length > 80 ? '…' : '' }}</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="empty-state" *ngIf="!filteredItems.length">
+      <span>&#127859;</span>
+      <h3>No items in this category</h3>
+      <button class="btn-outline-sm" (click)="selectCategory(null)">Show All Items</button>
+    </div>
+  </div>
+
+  <!-- ── Sticky Book CTA ── -->
+  <div class="sticky-cta">
+    <div class="sticky-cta-inner page-container">
+      <p><strong>Ready to dine at {{ restaurant.name }}?</strong></p>
+      <a [routerLink]="['/portal/book', restaurant.id]" class="btn-book-sticky">Book a Table</a>
+    </div>
+  </div>
+
+</div>

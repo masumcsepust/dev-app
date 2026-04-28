@@ -1,0 +1,34 @@
+.page-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 1.75rem; }
+
+/* Success */
+.success-msg { max-width: 480px; margin: 2rem auto; text-align: center; padding: 2.5rem; }
+.success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.success-msg h2 { font-size: 1.5rem; margin-bottom: .5rem; }
+.success-msg p  { color: var(--muted); margin-bottom: 1.5rem; font-size: .9rem; }
+.success-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+/* Layout */
+.checkout-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 768px) { .checkout-layout { grid-template-columns: 1fr; } }
+
+/* Form */
+.checkout-form h2, .order-summary h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1.1rem; color: var(--gray-700); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+@media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: .9rem; }
+.field label { display: block; font-size: .82rem; font-weight: 600; color: var(--gray-700); margin-bottom: .3rem; }
+.optional { font-weight: 400; color: var(--muted); }
+.field textarea { resize: vertical; }
+
+.place-btn { width: 100%; padding: .8rem; font-size: .95rem; margin-top: .25rem; border-radius: var(--radius-lg); }
+
+/* Summary */
+.sum-item { display: flex; justify-content: space-between; font-size: .875rem; padding: .45rem 0; }
+.item-name { color: var(--gray-700); }
+.item-qty  { color: var(--muted); font-size: .8rem; }
+.sum-divider { border-top: 1px solid var(--gray-200); margin: .5rem 0; }
+.sum-row { display: flex; justify-content: space-between; font-size: .875rem; color: var(--muted); padding: .3rem 0; }
+.free-tag { background: var(--primary-100); color: var(--primary-dark); font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-full); }
+.sum-total { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.1rem; border-top: 1.5px solid var(--gray-200); padding-top: .75rem; margin-top: .3rem; }

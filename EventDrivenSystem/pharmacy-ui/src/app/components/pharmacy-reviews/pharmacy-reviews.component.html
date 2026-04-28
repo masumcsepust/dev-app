@@ -1,0 +1,98 @@
+<!-- Hero -->
+<section class="reviews-hero">
+  <div class="container">
+    <div class="lang-bar">
+      <button [class.active]="lang==='en'" (click)="lang='en'">English</button>
+      <button [class.active]="lang==='bn'" (click)="lang='bn'">বাংলা</button>
+    </div>
+    <h1>{{ lang === 'bn' ? 'চিকিৎসক ও রোগীদের মতামত' : 'Doctor Reviews & Patient Testimonials' }}</h1>
+    <p>{{ lang === 'bn' ? 'বিশেষজ্ঞ চিকিৎসক এবং হাজার হাজার রোগী PharmaStore বিশ্বাস করেন।' : 'Trusted by specialist doctors and thousands of patients across Bangladesh.' }}</p>
+  </div>
+</section>
+
+<!-- Trust Stats -->
+<section class="stats-strip">
+  <div class="container stats-grid">
+    <div class="stat-item" *ngFor="let s of stats">
+      <div class="stat-icon">{{ s.icon }}</div>
+      <div class="stat-val">{{ s.value }}</div>
+      <div class="stat-label">{{ lang === 'bn' ? s.labelBn : s.label }}</div>
+    </div>
+  </div>
+</section>
+
+<!-- Doctor Endorsements -->
+<section class="section container">
+  <div class="section-head">
+    <h2>{{ lang === 'bn' ? 'চিকিৎসক অনুমোদন' : 'Doctor Endorsements' }}</h2>
+    <p class="section-sub">{{ lang === 'bn' ? 'সারাদেশের বিশেষজ্ঞ চিকিৎসকদের স্বীকৃতি' : 'Recognised by specialist doctors across Bangladesh' }}</p>
+  </div>
+
+  <div class="doctors-grid">
+    <div class="doctor-card" *ngFor="let d of doctors">
+      <div class="doctor-top">
+        <div class="doctor-avatar">{{ d.avatar }}</div>
+        <div class="doctor-meta">
+          <div class="doctor-name">{{ d.name }}</div>
+          <div class="doctor-title">{{ d.title }}</div>
+          <div class="doctor-spec">{{ d.specialty }}</div>
+          <div class="doctor-hosp">{{ d.hospital }}</div>
+        </div>
+        <div class="verified-badge" *ngIf="d.verified" title="Verified Doctor">✓ Verified</div>
+      </div>
+      <div class="doctor-stars">
+        <span class="star filled" *ngFor="let s of stars(d.rating)">★</span>
+        <span class="star" *ngFor="let s of emptyStars(d.rating)">★</span>
+      </div>
+      <blockquote class="doctor-review">
+        "{{ lang === 'bn' ? d.reviewBn : d.review }}"
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C300,60 900,0 1200,30 L1200,60 L0,60Z" fill="#f0fdf8"/></svg>
+</div>
+
+<!-- Patient Testimonials -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-head">
+      <h2>{{ lang === 'bn' ? 'রোগীদের অভিজ্ঞতা' : 'Patient Experiences' }}</h2>
+      <p class="section-sub">{{ lang === 'bn' ? 'বাস্তব রোগীদের সত্যিকারের গল্প' : 'Real stories from real patients' }}</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let t of testimonials">
+        <div class="t-header">
+          <div class="t-avatar">{{ t.avatar }}</div>
+          <div>
+            <div class="t-name">{{ t.name }}</div>
+            <div class="t-location">📍 {{ t.location }}</div>
+          </div>
+          <div class="t-date">{{ t.date }}</div>
+        </div>
+        <div class="t-stars">
+          <span class="star filled" *ngFor="let s of stars(t.rating)">★</span>
+          <span class="star empty" *ngFor="let s of emptyStars(t.rating)">★</span>
+        </div>
+        <p class="t-comment">"{{ lang === 'bn' ? t.commentBn : t.comment }}"</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section container">
+  <div class="cta-card">
+    <div class="cta-icon">💊</div>
+    <h2>{{ lang === 'bn' ? 'আজই PharmaStore ব্যবহার শুরু করুন' : 'Start using PharmaStore today' }}</h2>
+    <p>{{ lang === 'bn' ? 'বিশ্বস্ত ওষুধ, দ্রুত ডেলিভারি এবং AI সহায়তা — সবকিছু এক জায়গায়।' : 'Trusted medicines, fast delivery, and AI guidance — all in one place.' }}</p>
+    <div class="cta-actions">
+      <a routerLink="/medicines" class="btn-primary">{{ lang === 'bn' ? 'ওষুধ দেখুন' : 'Browse Medicines' }}</a>
+      <a routerLink="/ai-assistant" class="btn-outline">{{ lang === 'bn' ? 'AI-কে জিজ্ঞেস করুন' : 'Ask PharmaAI' }}</a>
+    </div>
+  </div>
+</section>

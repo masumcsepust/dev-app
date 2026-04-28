@@ -1,0 +1,63 @@
+<div class="dashboard">
+  <h1>Pharmacy Dashboard</h1>
+
+  <div class="loading" *ngIf="loading">Loading stats…</div>
+
+  <div class="stats-grid" *ngIf="!loading">
+    <div class="stat-card">
+      <div class="stat-icon">💊</div>
+      <div class="stat-val">{{ stats.totalMedicines }}</div>
+      <div class="stat-label">Total Medicines</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🗂️</div>
+      <div class="stat-val">{{ stats.totalCategories }}</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div class="stat-val">{{ stats.totalOrders }}</div>
+      <div class="stat-label">Total Orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-val">{{ stats.totalPrescriptions }}</div>
+      <div class="stat-label">Prescriptions</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-val">{{ stats.pendingPrescriptions }}</div>
+      <div class="stat-label">Pending Rx</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-val">{{ stats.lowStock }}</div>
+      <div class="stat-label">Low Stock (&lt;10)</div>
+    </div>
+  </div>
+
+  <div class="section" *ngIf="!loading">
+    <div class="section-header">
+      <h2>Recent Orders</h2>
+      <a routerLink="../orders" class="see-all">View all →</a>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of recentOrders">
+            <td>{{ o.id }}</td>
+            <td>{{ o.customerName }}</td>
+            <td>{{ o.customerPhone }}</td>
+            <td>{{ o.items.length }}</td>
+            <td>৳ {{ o.totalAmount | number:'1.2-2' }}</td>
+            <td><span class="status-badge" [ngClass]="statusClass(o.status)">{{ o.status }}</span></td>
+            <td>{{ o.createdAt | date:'shortDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

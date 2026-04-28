@@ -1,0 +1,46 @@
+<header class="navbar">
+  <div class="container nav-inner">
+    <a routerLink="/" class="brand">
+      <div class="brand-icon">💊</div>
+      <div class="brand-name">Pharma<span>Store</span></div>
+    </a>
+
+    <nav class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+      <a routerLink="/medicines" routerLinkActive="active">Medicines</a>
+      <a routerLink="/prescription" routerLinkActive="active">Submit Rx</a>
+      <a routerLink="/my-orders" routerLinkActive="active">My Orders</a>
+      <a routerLink="/reviews" routerLinkActive="active">Reviews</a>
+      <a routerLink="/ai-assistant" routerLinkActive="active" class="ai-link">🤖 AI Assistant</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a routerLink="/cart" class="cart-btn">
+        🛒
+        <span class="cart-count" *ngIf="(cart$ | async)?.length as n">{{ n }}</span>
+      </a>
+
+      <ng-container *ngIf="user$ | async as user; else loginBtn">
+        <div class="user-menu">
+          <span class="user-name">{{ user.firstName }}</span>
+          <button class="logout-btn" (click)="logout()">Sign out</button>
+        </div>
+      </ng-container>
+      <ng-template #loginBtn>
+        <a routerLink="/login" class="btn btn-outline-sm">Sign in</a>
+      </ng-template>
+    </div>
+  </div>
+</header>
+
+<main class="main-content">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <div class="container">
+    © 2025 <span>PharmaStore</span> · Your trusted digital pharmacy · All medicines are 100% genuine
+  </div>
+</footer>
+
+<app-pharmacy-ai-chat />

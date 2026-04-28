@@ -1,0 +1,63 @@
+<div class="page-wrap">
+  <h1>Checkout</h1>
+
+  <div class="success-card" *ngIf="order">
+    <div class="success-icon">✓</div>
+    <h2>Order Placed!</h2>
+    <p>Your order #{{ order.id }} has been received and is being processed.</p>
+    <p class="total-conf">Total: <strong>৳ {{ order.totalAmount | number:'1.2-2' }}</strong></p>
+    <div class="success-actions">
+      <a [routerLink]="['/pharmacy/my-orders']" class="btn-primary">Track Orders</a>
+      <a routerLink="/pharmacy/medicines" class="btn-outline">Continue Shopping</a>
+    </div>
+  </div>
+
+  <div class="checkout-layout" *ngIf="!order">
+    <div class="checkout-form-wrap">
+      <h2>Delivery Information</h2>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" [(ngModel)]="form.customerName" placeholder="Your full name" />
+      </div>
+      <div class="form-group">
+        <label>Phone *</label>
+        <input type="text" [(ngModel)]="form.customerPhone" placeholder="01XXXXXXXXX" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="form.customerEmail" placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Delivery Address *</label>
+        <textarea [(ngModel)]="form.deliveryAddress" rows="3" placeholder="House, road, area, city"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea [(ngModel)]="form.notes" rows="2" placeholder="Any special instructions…"></textarea>
+      </div>
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+    </div>
+
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <div class="empty-cart" *ngIf="items.length === 0">
+        <p>Your cart is empty.</p>
+        <a routerLink="/pharmacy/medicines" class="btn-outline">Browse Medicines</a>
+      </div>
+      <div *ngIf="items.length > 0">
+        <div class="sum-item" *ngFor="let item of items">
+          <span>{{ item.medicine.name }} × {{ item.quantity }}</span>
+          <span>৳ {{ item.medicine.price * item.quantity | number:'1.2-2' }}</span>
+        </div>
+        <div class="sum-divider"></div>
+        <div class="sum-total">
+          <strong>Total</strong>
+          <strong>৳ {{ total | number:'1.2-2' }}</strong>
+        </div>
+        <button class="btn-place" (click)="submit()" [disabled]="submitting">
+          {{ submitting ? 'Placing Order…' : 'Place Order' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

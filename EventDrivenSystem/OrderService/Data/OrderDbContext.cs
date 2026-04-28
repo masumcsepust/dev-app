@@ -13,6 +13,9 @@ namespace OrderService.Data
         public DbSet<Restaurant> Restaurants { get; set; } = null!;
         public DbSet<MenuItem> MenuItems { get; set; } = null!;
 
+        public DbSet<PharmacyOrder> PharmacyOrders { get; set; } = null!;
+        public DbSet<PharmacyOrderItem> PharmacyOrderItems { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,28 +25,20 @@ namespace OrderService.Data
             modelBuilder.Entity<MenuItem>().Property(m => m.Id).ValueGeneratedNever();
 
             modelBuilder.Entity<Order>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+                .HasOne<User>().WithMany().HasForeignKey(o => o.CustomerId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Order>()
-                .HasOne<Restaurant>()
-                .WithMany()
-                .HasForeignKey(o => o.RestaurantId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne<Restaurant>().WithMany().HasForeignKey(o => o.RestaurantId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OrderItem>()
+                .HasOne<Order>().WithMany(o => o.OrderItems).HasForeignKey(oi => oi.OrderId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<OrderItem>()
+                .HasOne<MenuItem>().WithMany().HasForeignKey(oi => oi.MenuItemId).OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<OrderItem>()
-                .HasOne<Order>()
-                .WithMany(o => o.OrderItems)
-                .HasForeignKey(oi => oi.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-                
-            modelBuilder.Entity<OrderItem>()
-                .HasOne<MenuItem>()
-                .WithMany()
-                .HasForeignKey(oi => oi.MenuItemId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PharmacyOrder>()
+                .Property(o => o.TotalAmount).HasPrecision(18, 2);
+            modelBuilder.Entity<PharmacyOrderItem>()
+                .HasOne(i => i.Order).WithMany(o => o.Items).HasForeignKey(i => i.OrderId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PharmacyOrderItem>()
+                .Property(i => i.UnitPrice).HasPrecision(18, 2);
         }
     }
 }

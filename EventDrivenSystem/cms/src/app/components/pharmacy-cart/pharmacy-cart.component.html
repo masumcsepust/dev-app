@@ -1,0 +1,46 @@
+<div class="page-wrap">
+  <h1>Shopping Cart</h1>
+
+  <div class="empty" *ngIf="items.length === 0">
+    <p>Your cart is empty.</p>
+    <a routerLink="/pharmacy/medicines" class="btn-shop">Browse Medicines</a>
+  </div>
+
+  <div class="cart-layout" *ngIf="items.length > 0">
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of items">
+        <div class="item-img-wrap">
+          <img [src]="item.medicine.imageUrl" [alt]="item.medicine.name" class="item-img" onerror="this.src=''" />
+        </div>
+        <div class="item-info">
+          <div class="item-name">{{ item.medicine.name }}</div>
+          <div class="item-generic">{{ item.medicine.genericName }}</div>
+          <div class="item-price">৳ {{ item.medicine.price | number:'1.2-2' }} each</div>
+        </div>
+        <div class="item-qty">
+          <button class="qty-btn" (click)="updateQty(item.medicine.id, item.quantity - 1)">−</button>
+          <span class="qty-val">{{ item.quantity }}</span>
+          <button class="qty-btn" (click)="updateQty(item.medicine.id, item.quantity + 1)"
+            [disabled]="item.quantity >= item.medicine.stockQuantity">+</button>
+        </div>
+        <div class="item-subtotal">৳ {{ item.medicine.price * item.quantity | number:'1.2-2' }}</div>
+        <button class="remove-btn" (click)="remove(item.medicine.id)" title="Remove">✕</button>
+      </div>
+    </div>
+
+    <div class="cart-summary">
+      <h2>Order Summary</h2>
+      <div class="summary-row" *ngFor="let item of items">
+        <span>{{ item.medicine.name }} × {{ item.quantity }}</span>
+        <span>৳ {{ item.medicine.price * item.quantity | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-total">
+        <strong>Total</strong>
+        <strong>৳ {{ total | number:'1.2-2' }}</strong>
+      </div>
+      <a routerLink="/pharmacy/checkout" class="btn-checkout">Proceed to Checkout</a>
+      <button class="btn-clear" (click)="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+</div>

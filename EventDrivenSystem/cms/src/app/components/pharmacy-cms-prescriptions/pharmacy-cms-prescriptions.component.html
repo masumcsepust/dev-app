@@ -1,0 +1,63 @@
+<div class="page">
+  <h1>Prescriptions</h1>
+
+  <div class="overlay" *ngIf="selected" (click)="selected = null"></div>
+  <div class="modal" *ngIf="selected">
+    <div class="modal-header">
+      <h2>Prescription #{{ selected.id }}</h2>
+      <button class="modal-close" (click)="selected = null">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div><span class="dl">Customer</span><span>{{ selected.customerName }}</span></div>
+        <div><span class="dl">Phone</span><span>{{ selected.customerPhone }}</span></div>
+        <div><span class="dl">Email</span><span>{{ selected.customerEmail }}</span></div>
+        <div><span class="dl">Doctor</span><span>{{ selected.doctorName }}</span></div>
+        <div class="full"><span class="dl">Notes</span><span>{{ selected.notes || '—' }}</span></div>
+      </div>
+      <div class="rx-image" *ngIf="selected.imageUrl">
+        <h3>Prescription Image</h3>
+        <img [src]="'http://localhost:5091' + selected.imageUrl" alt="Prescription" class="rx-img" />
+      </div>
+      <div class="items-section" *ngIf="selected.items?.length">
+        <h3>Requested Medicines</h3>
+        <div class="rx-item" *ngFor="let item of selected.items">
+          <span>{{ item.medicine?.name || 'Medicine #' + item.medicineId }}</span>
+          <span>× {{ item.quantity }}</span>
+        </div>
+      </div>
+      <div class="action-row">
+        <span class="status-badge" [ngClass]="statusClass(selected.status)">{{ selected.status }}</span>
+        <div class="action-btns" *ngIf="selected.status === 'Pending'">
+          <button class="btn-approve" (click)="updateStatus(selected.id, 'Approved')" [disabled]="updating">Approve</button>
+          <button class="btn-reject" (click)="updateStatus(selected.id, 'Rejected')" [disabled]="updating">Reject</button>
+        </div>
+        <div class="action-btns" *ngIf="selected.status === 'Approved'">
+          <button class="btn-dispense" (click)="updateStatus(selected.id, 'Dispensed')" [disabled]="updating">Mark Dispensed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <div class="table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Customer</th><th>Phone</th><th>Doctor</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let p of prescriptions | paginate:page:pageSize">
+          <td>{{ p.id }}</td>
+          <td>{{ p.customerName }}</td>
+          <td>{{ p.customerPhone }}</td>
+          <td>{{ p.doctorName || '—' }}</td>
+          <td><span class="status-badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span></td>
+          <td>{{ p.createdAt | date:'shortDate' }}</td>
+          <td><button class="btn-view" (click)="selected = p">View</button></td>
+        </tr>
+      </tbody>
+    </table>
+<app-pagination [total]="prescriptions.length" [page]="page" [pageSize]="pageSize" (pageChange)="page=$event" (pageSizeChange)="pageSize=$event;page=1"/>
+
+    <p class="empty" *ngIf="prescriptions.length === 0">No prescriptions yet.</p>
+  </div>
+</div>

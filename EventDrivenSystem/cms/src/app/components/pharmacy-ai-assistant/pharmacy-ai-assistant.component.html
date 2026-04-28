@@ -1,0 +1,57 @@
+<div class="assistant-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar">💊</div>
+      <div>
+        <div class="sidebar-name">PharmaAI</div>
+        <div class="sidebar-sub">Pharmacy Assistant</div>
+      </div>
+    </div>
+
+    <div class="topic-list">
+      <div class="topic-item" *ngFor="let topic of topics; let i = index">
+        <button class="topic-btn" (click)="toggleTopic(i)" [class.expanded]="expandedTopic === i">
+          <span>{{ topic.icon }} {{ topic.label }}</span>
+          <span class="chevron">{{ expandedTopic === i ? '▲' : '▼' }}</span>
+        </button>
+        <div class="topic-questions" *ngIf="expandedTopic === i">
+          <button *ngFor="let q of topic.questions" class="topic-q" (click)="ask(q)">{{ q }}</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-clear" (click)="clearChat()">↺ New Conversation</button>
+  </aside>
+
+  <section class="chat-section">
+    <div class="chat-messages">
+      <div *ngFor="let msg of history; let i = index"
+        class="message-row" [class.user-row]="msg.role === 'user'" [class.ai-row]="msg.role === 'assistant'">
+        <div class="avatar" *ngIf="msg.role === 'assistant'">💊</div>
+        <div class="msg-group">
+          <div class="bubble" [class.user-bubble]="msg.role === 'user'" [class.ai-bubble]="msg.role === 'assistant'">
+            <span *ngIf="msg.role === 'user'">{{ msg.content }}</span>
+            <span *ngIf="msg.role === 'assistant'" [innerHTML]="msg.content | aiMarkdown"></span>
+          </div>
+          <div class="msg-meta">
+            <span class="msg-time">{{ msg.timestamp | date:'shortTime' }}</span>
+            <button *ngIf="msg.role === 'assistant'" class="copy-btn" (click)="copyMessage(msg.content, i)">
+              {{ copiedIdx === i ? '✓ Copied' : 'Copy' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="message-row ai-row" *ngIf="loading">
+        <div class="avatar">💊</div>
+        <div class="bubble ai-bubble typing"><span></span><span></span><span></span></div>
+      </div>
+      <div #messagesEnd></div>
+    </div>
+
+    <div class="input-area">
+      <textarea class="chat-input" rows="2" placeholder="Ask about medicines, dosages, side effects, prescriptions…"
+        [(ngModel)]="userInput" (keydown)="onKeyDown($event)" [disabled]="loading"></textarea>
+      <button class="send-btn" (click)="send()" [disabled]="!userInput.trim() || loading">Send ➤</button>
+    </div>
+  </section>
+</div>

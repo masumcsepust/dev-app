@@ -1,0 +1,76 @@
+<section class="hero">
+  <div class="hero-content">
+    <h1>Your Trusted Digital Pharmacy</h1>
+    <p>Browse thousands of medicines, upload prescriptions, and get fast delivery</p>
+    <div class="hero-search">
+      <input type="text" placeholder="Search medicines by name or generic name…"
+        [(ngModel)]="searchQuery" (keydown.enter)="search()" />
+      <button (click)="search()">Search</button>
+    </div>
+  </div>
+</section>
+
+<div class="page-wrap">
+
+  <section class="section" *ngIf="categories.length">
+    <h2 class="section-title">Browse Categories</h2>
+    <div class="cat-grid">
+      <a *ngFor="let cat of categories"
+         [routerLink]="['/pharmacy/medicines']"
+         [queryParams]="{ categoryId: cat.id }"
+         class="cat-card">
+        <span class="cat-icon">💊</span>
+        <span class="cat-name">{{ cat.name }}</span>
+        <span class="cat-desc">{{ cat.description }}</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" *ngIf="featured.length">
+    <div class="section-header">
+      <h2 class="section-title">Featured Medicines</h2>
+      <a routerLink="/pharmacy/medicines" class="see-all">See all →</a>
+    </div>
+    <div class="med-grid">
+      <div class="med-card" *ngFor="let med of featured">
+        <div class="med-img-wrap">
+          <img [src]="med.imageUrl || 'assets/pill.png'" [alt]="med.name" class="med-img" onerror="this.src=''" />
+          <span class="med-form-badge">{{ med.form }}</span>
+        </div>
+        <div class="med-body">
+          <div class="med-name">{{ med.name }}</div>
+          <div class="med-generic">{{ med.genericName }}</div>
+          <div class="med-price">৳ {{ med.price | number:'1.2-2' }}</div>
+          <div class="med-stock" [class.low]="med.stockQuantity < 10">
+            {{ med.stockQuantity > 0 ? 'In Stock (' + med.stockQuantity + ')' : 'Out of Stock' }}
+          </div>
+        </div>
+        <div class="med-actions">
+          <a [routerLink]="['/pharmacy/medicine', med.id]" class="btn-outline">Details</a>
+          <button class="btn-primary" (click)="addToCart(med)"
+            [disabled]="med.stockQuantity === 0">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-strip">
+    <div class="info-item">
+      <span class="info-icon">🚚</span>
+      <div><strong>Fast Delivery</strong><p>Same-day delivery in your area</p></div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">🔒</span>
+      <div><strong>Secure & Safe</strong><p>Licensed pharmacists review every order</p></div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">🤖</span>
+      <div><strong>AI Assistant</strong><p>Get instant medicine information</p></div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">📋</span>
+      <div><strong>Prescription Service</strong><p>Upload & get Rx medicines approved</p></div>
+    </div>
+  </section>
+
+</div>

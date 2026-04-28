@@ -1,0 +1,112 @@
+<!-- ── Page Banner ── -->
+<div class="page-banner">
+  <div class="page-container">
+    <h1 class="page-title">My Reservations</h1>
+    <p class="page-sub">Track and manage all your table bookings</p>
+  </div>
+</div>
+
+<div class="page-container content-area">
+
+  <!-- Loading -->
+  <div class="spinner-wrap" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading your reservations…</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="!loading && error">
+    <span>&#9888;</span> {{ error }}
+  </div>
+
+  <ng-container *ngIf="!loading && !error">
+
+    <!-- ── Upcoming Reservations ── -->
+    <section class="res-section" *ngIf="upcoming.length">
+      <h2 class="res-section-title">
+        <span class="dot dot-green"></span> Upcoming
+        <span class="count-badge">{{ upcoming.length }}</span>
+      </h2>
+      <div class="res-list">
+        <div class="res-card" *ngFor="let r of upcoming">
+          <div class="res-card-left">
+            <div class="res-date-block">
+              <span class="res-day">{{ r.reservationDateTime | date:'d' }}</span>
+              <span class="res-month">{{ r.reservationDateTime | date:'MMM' }}</span>
+            </div>
+          </div>
+          <div class="res-card-body">
+            <div class="res-card-top">
+              <div>
+                <h3 class="res-restaurant">{{ r.restaurantName }}</h3>
+                <p class="res-meta">
+                  &#128336; {{ r.reservationDateTime | date:'EEE, d MMM y, h:mm a' }}
+                  &nbsp;&bull;&nbsp; &#128101; {{ r.guestsCount }} {{ r.guestsCount === 1 ? 'guest' : 'guests' }}
+                  &nbsp;&bull;&nbsp; Table {{ r.table?.tableNumber ?? '—' }}
+                </p>
+              </div>
+              <span class="status-badge" [ngClass]="statusClass(r.status)">{{ r.status }}</span>
+            </div>
+            <p class="res-name-line">Booked for <strong>{{ r.customerName }}</strong></p>
+            <p class="res-special" *ngIf="r.specialRequest">
+              &#128172; {{ r.specialRequest }}
+            </p>
+            <div class="res-actions">
+              <a [routerLink]="['/portal/restaurant', r.restaurantId]" class="btn-view">View Menu</a>
+              <button
+                class="btn-cancel"
+                *ngIf="canCancel(r)"
+                [disabled]="cancellingId === r.id"
+                (click)="cancelReservation(r.id)"
+              >
+                {{ cancellingId === r.id ? 'Cancelling…' : 'Cancel Booking' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Past Reservations ── -->
+    <section class="res-section" *ngIf="past.length">
+      <h2 class="res-section-title">
+        <span class="dot dot-gray"></span> Past &amp; Cancelled
+        <span class="count-badge count-gray">{{ past.length }}</span>
+      </h2>
+      <div class="res-list res-list-past">
+        <div class="res-card past-card" *ngFor="let r of past">
+          <div class="res-card-left">
+            <div class="res-date-block past-date">
+              <span class="res-day">{{ r.reservationDateTime | date:'d' }}</span>
+              <span class="res-month">{{ r.reservationDateTime | date:'MMM' }}</span>
+            </div>
+          </div>
+          <div class="res-card-body">
+            <div class="res-card-top">
+              <div>
+                <h3 class="res-restaurant">{{ r.restaurantName }}</h3>
+                <p class="res-meta">
+                  &#128336; {{ r.reservationDateTime | date:'EEE, d MMM y, h:mm a' }}
+                  &nbsp;&bull;&nbsp; &#128101; {{ r.guestsCount }} {{ r.guestsCount === 1 ? 'guest' : 'guests' }}
+                </p>
+              </div>
+              <span class="status-badge" [ngClass]="statusClass(r.status)">{{ r.status }}</span>
+            </div>
+            <div class="res-actions">
+              <a [routerLink]="['/portal/book', r.restaurantId]" class="btn-view">Book Again</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Empty State ── -->
+    <div class="empty-state" *ngIf="!upcoming.length && !past.length">
+      <span>&#128197;</span>
+      <h3>No Reservations Yet</h3>
+      <p>You haven't made any bookings. Browse restaurants and reserve your first table!</p>
+      <a routerLink="/portal/restaurants" class="btn-primary">Browse Restaurants</a>
+    </div>
+
+  </ng-container>
+</div>

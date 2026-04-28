@@ -1,0 +1,153 @@
+<div class="ai-page">
+
+  <!-- ── Page Header ── -->
+  <div class="ai-header">
+    <div class="ai-header-inner">
+      <div class="ai-avatar">🤖</div>
+      <div class="ai-header-text">
+        <h1 class="ai-title">DeshiFood AI Assistant</h1>
+        <p class="ai-subtitle">Powered by Claude · Ask me anything about our food &amp; restaurants</p>
+      </div>
+      <button class="btn-clear" *ngIf="hasMessages" (click)="clearChat()" title="New conversation">
+        ✕ New Chat
+      </button>
+    </div>
+  </div>
+
+  <div class="ai-body">
+
+    <!-- ── Welcome / Empty State ── -->
+    <div class="ai-welcome" *ngIf="!hasMessages">
+      <div class="welcome-hero">
+        <div class="hero-icon">🍛</div>
+        <h2>Hi! How can I help you today?</h2>
+        <p>I know our full menu, restaurants, pricing, and Bangladeshi cuisine — just ask!</p>
+      </div>
+
+      <!-- Topic chips -->
+      <div class="topic-chips">
+        <button
+          *ngFor="let topic of topics"
+          class="topic-chip"
+          [class.active]="activeTopic === topic"
+          (click)="selectTopic(topic)"
+        >
+          <span class="chip-icon">{{ topic.icon }}</span>
+          <span>{{ topic.label }}</span>
+        </button>
+      </div>
+
+      <!-- Questions for active topic -->
+      <div class="question-grid" *ngIf="activeTopic">
+        <button
+          *ngFor="let q of activeTopic.questions"
+          class="question-card"
+          (click)="ask(q)"
+        >
+          <span class="q-icon">{{ activeTopic.icon }}</span>
+          <span class="q-text">{{ q }}</span>
+        </button>
+      </div>
+
+      <!-- Default suggestion grid (no topic selected) -->
+      <div class="question-grid" *ngIf="!activeTopic">
+        <button class="question-card" (click)="ask('What restaurants are available?')">
+          <span class="q-icon">🏠</span>
+          <span class="q-text">What restaurants are available?</span>
+        </button>
+        <button class="question-card" (click)="ask('Recommend a dish for a first-time visitor')">
+          <span class="q-icon">⭐</span>
+          <span class="q-text">Recommend a dish for a first-time visitor</span>
+        </button>
+        <button class="question-card" (click)="ask('What vegetarian options do you have?')">
+          <span class="q-icon">🥗</span>
+          <span class="q-text">What vegetarian options are available?</span>
+        </button>
+        <button class="question-card" (click)="ask('How do I book a table?')">
+          <span class="q-icon">📅</span>
+          <span class="q-text">How do I book a table?</span>
+        </button>
+        <button class="question-card" (click)="ask('Which restaurant has the best biryani?')">
+          <span class="q-icon">🍲</span>
+          <span class="q-text">Which restaurant has the best biryani?</span>
+        </button>
+        <button class="question-card" (click)="ask('What are traditional Bangladeshi desserts?')">
+          <span class="q-icon">🍮</span>
+          <span class="q-text">Tell me about Bangladeshi desserts</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Chat Messages ── -->
+    <div class="chat-messages" *ngIf="hasMessages">
+      <div
+        *ngFor="let msg of history; let i = index"
+        class="message-row"
+        [class.user-row]="msg.role === 'user'"
+        [class.ai-row]="msg.role === 'assistant'"
+      >
+        <div class="msg-avatar" *ngIf="msg.role === 'assistant'">🤖</div>
+        <div class="msg-wrap">
+          <div
+            class="bubble"
+            [class.user-bubble]="msg.role === 'user'"
+            [class.ai-bubble]="msg.role === 'assistant'"
+          >
+            <span *ngIf="msg.role === 'user'">{{ msg.content }}</span>
+            <span *ngIf="msg.role === 'assistant'" [innerHTML]="msg.content | aiMarkdown"></span>
+          </div>
+          <div class="msg-meta">
+            <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
+            <button
+              *ngIf="msg.role === 'assistant'"
+              class="copy-btn"
+              (click)="copyMessage(msg.content, i)"
+              [title]="copiedIndex === i ? 'Copied!' : 'Copy'"
+            >
+              {{ copiedIndex === i ? '✓' : '⎘' }}
+            </button>
+          </div>
+        </div>
+        <div class="msg-avatar user-avatar" *ngIf="msg.role === 'user'">You</div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="message-row ai-row" *ngIf="loading">
+        <div class="msg-avatar">🤖</div>
+        <div class="bubble ai-bubble typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div #messagesEnd></div>
+    </div>
+
+  </div>
+
+  <!-- ── Input Area ── -->
+  <div class="ai-input-bar">
+    <!-- Quick suggestions shown even after chatting -->
+    <div class="input-suggestions" *ngIf="hasMessages && !loading">
+      <button class="sugg-chip" (click)="ask('What else do you recommend?')">More recommendations</button>
+      <button class="sugg-chip" (click)="ask('Show me the full menu')">Full menu</button>
+      <button class="sugg-chip" (click)="ask('How do I book a table?')">Book a table</button>
+    </div>
+    <div class="input-row">
+      <textarea
+        #chatInput
+        class="chat-input"
+        rows="1"
+        placeholder="Ask about menu, restaurants, reservations, or Bangladeshi cuisine…"
+        [(ngModel)]="userInput"
+        (keydown)="onKeyDown($event)"
+        [disabled]="loading"
+      ></textarea>
+      <button class="send-btn" (click)="send()" [disabled]="!userInput.trim() || loading">
+        <span *ngIf="!loading">➤</span>
+        <span *ngIf="loading" class="spin">⟳</span>
+      </button>
+    </div>
+    <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+  </div>
+
+</div>

@@ -1,0 +1,58 @@
+<div class="page container">
+  <a routerLink="/medicines" class="back-link">← Back to Medicines</a>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <div class="detail-wrap" *ngIf="medicine && !loading">
+    <div class="detail-img">
+      <img *ngIf="medicine.imageUrl" [src]="'http://localhost:5091' + medicine.imageUrl" [alt]="medicine.name">
+      <span *ngIf="!medicine.imageUrl">💊</span>
+    </div>
+    <div class="detail-info">
+      <div class="top-badges">
+        <span class="badge badge-gray">{{ medicine.form }}</span>
+        <span class="badge badge-yellow" *ngIf="medicine.requiresPrescription">Prescription Required</span>
+        <span class="badge badge-red" *ngIf="!medicine.isAvailable">Out of Stock</span>
+        <span class="badge badge-green" *ngIf="medicine.isAvailable && !medicine.requiresPrescription">In Stock</span>
+      </div>
+
+      <h1 class="med-name">{{ medicine.name }}</h1>
+      <p class="med-generic">Generic: {{ medicine.genericName }}</p>
+      <p class="med-mfr">Manufacturer: {{ medicine.manufacturer }}</p>
+
+      <div class="price-row">
+        <span class="price">৳ {{ medicine.price | number:'1.2-2' }}</span>
+        <span class="stock-info">Stock: {{ medicine.stockQuantity }} units</span>
+      </div>
+
+      <div class="info-block" *ngIf="medicine.description">
+        <h3>Description</h3>
+        <p>{{ medicine.description }}</p>
+      </div>
+      <div class="info-block" *ngIf="medicine.dosage">
+        <h3>Dosage</h3>
+        <p>{{ medicine.dosage }}</p>
+      </div>
+      <div class="info-block" *ngIf="medicine.sideEffects">
+        <h3>Side Effects</h3>
+        <p>{{ medicine.sideEffects }}</p>
+      </div>
+
+      <div class="cart-row" *ngIf="!medicine.requiresPrescription && medicine.isAvailable">
+        <div class="qty-ctrl">
+          <button (click)="qty = qty > 1 ? qty - 1 : 1">−</button>
+          <input type="number" [(ngModel)]="qty" min="1" [max]="medicine.stockQuantity">
+          <button (click)="qty = qty < medicine.stockQuantity ? qty + 1 : qty">+</button>
+        </div>
+        <button class="btn-primary add-btn" (click)="addToCart()">
+          {{ added ? '✓ Added!' : 'Add to Cart' }}
+        </button>
+      </div>
+
+      <div class="rx-notice" *ngIf="medicine.requiresPrescription">
+        <p>This medicine requires a valid prescription.</p>
+        <a routerLink="/prescription" class="btn-primary">Submit Prescription</a>
+      </div>
+    </div>
+  </div>
+</div>

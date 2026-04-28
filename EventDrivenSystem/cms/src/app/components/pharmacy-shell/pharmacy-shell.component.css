@@ -1,0 +1,37 @@
+.ph-nav {
+  background: #1a7a5e;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.ph-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.ph-brand { display: flex; align-items: center; gap: .5rem; text-decoration: none; color: #fff; }
+.ph-brand-icon { font-size: 1.5rem; }
+.ph-brand-name { font-size: 1.2rem; font-weight: 700; letter-spacing: .5px; }
+.ph-menu-btn { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+.ph-nav-links { display: flex; align-items: center; gap: 1.5rem; }
+.ph-nav-links a { color: rgba(255,255,255,.85); text-decoration: none; font-size: .92rem; font-weight: 500; transition: color .18s; }
+.ph-nav-links a:hover, .ph-nav-links a.active { color: #fff; }
+.cart-link { display: flex; align-items: center; gap: .3rem; position: relative; }
+.cart-badge {
+  background: #e53e3e; color: #fff; border-radius: 50%;
+  width: 18px; height: 18px; font-size: .65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.ph-main { min-height: calc(100vh - 60px - 52px); background: #f4f7f6; }
+.ph-footer { background: #1a7a5e; color: rgba(255,255,255,.7); text-align: center; padding: .85rem; font-size: .82rem; }
+@media(max-width:768px){
+  .ph-menu-btn { display: block; }
+  .ph-nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: #1a7a5e; padding: 1rem; gap: 1rem; }
+  .ph-nav-links.open { display: flex; }
+}

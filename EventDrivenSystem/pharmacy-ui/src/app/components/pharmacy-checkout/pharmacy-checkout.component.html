@@ -1,0 +1,73 @@
+<div class="page container">
+  <div class="page-title">Checkout</div>
+
+  <div class="success-msg card" *ngIf="success">
+    <div class="success-icon">✅</div>
+    <h2>Order Placed!</h2>
+    <p>Your order <strong>#{{ orderId }}</strong> has been placed successfully. We'll deliver to your address soon.</p>
+    <div class="success-actions">
+      <a routerLink="/my-orders" class="btn-primary">Track My Orders</a>
+      <a routerLink="/medicines" class="btn-outline">Continue Shopping</a>
+    </div>
+  </div>
+
+  <div class="checkout-layout" *ngIf="!success">
+    <ng-container *ngIf="cart$ | async as cart">
+
+      <div class="empty card" *ngIf="cart.length === 0">
+        <p>Your cart is empty. <a routerLink="/medicines">Browse medicines</a></p>
+      </div>
+
+      <form class="checkout-form card" (ngSubmit)="submit()" *ngIf="cart.length > 0">
+        <h2>Delivery Details</h2>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Full Name *</label>
+            <input type="text" [(ngModel)]="form.customerName" name="name" required placeholder="Your full name">
+          </div>
+          <div class="field">
+            <label>Phone Number *</label>
+            <input type="tel" [(ngModel)]="form.customerPhone" name="phone" required placeholder="+8801…">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" [(ngModel)]="form.customerEmail" name="email" placeholder="you@example.com (optional)">
+        </div>
+
+        <div class="field">
+          <label>Delivery Address *</label>
+          <textarea [(ngModel)]="form.deliveryAddress" name="address" required rows="3"
+            placeholder="House/Flat, Road, Area, District…"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Notes <span class="optional">(optional)</span></label>
+          <input type="text" [(ngModel)]="form.notes" name="notes" placeholder="Delivery instructions, preferred time…">
+        </div>
+
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+        <button type="submit" class="btn-primary place-btn" [disabled]="loading ||
+          !form.customerName || !form.customerPhone || !form.deliveryAddress">
+          {{ loading ? 'Placing order…' : '🛒 Place Order' }}
+        </button>
+      </form>
+
+      <div class="order-summary card" *ngIf="cart.length > 0">
+        <h2>Order Summary</h2>
+        <div class="sum-item" *ngFor="let item of cart">
+          <span class="item-name">{{ item.medicine.name }} <span class="item-qty">× {{ item.quantity }}</span></span>
+          <span>৳ {{ item.medicine.price * item.quantity | number:'1.2-2' }}</span>
+        </div>
+        <div class="sum-divider"></div>
+        <div class="sum-row"><span>Subtotal</span><span>৳ {{ total | number:'1.2-2' }}</span></div>
+        <div class="sum-row"><span>Delivery</span><span class="free-tag">FREE</span></div>
+        <div class="sum-total"><span>Total</span><span>৳ {{ total | number:'1.2-2' }}</span></div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>

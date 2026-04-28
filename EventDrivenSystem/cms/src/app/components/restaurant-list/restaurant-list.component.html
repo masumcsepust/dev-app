@@ -1,0 +1,166 @@
+<div class="page-wrap">
+
+  <!-- Toast -->
+  <div class="toast" [class.show]="toast.show" [class.toast-error]="toast.type === 'error'">
+    {{ toast.message }}
+  </div>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Restaurants</h2>
+      <p class="page-sub">Manage your restaurant locations</p>
+    </div>
+    <button class="btn-primary" (click)="openAdd()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
+      Add Restaurant
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading restaurants...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !restaurants.length" class="empty-hero">
+    <svg viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="32" fill="rgba(255,107,53,0.08)"/>
+      <path d="M20 44V20a2 2 0 012-2h20a2 2 0 012 2v24m-24 0h24m-12 0v-8a2 2 0 00-2-2h-4a2 2 0 00-2 2v8" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <h3>No restaurants yet</h3>
+    <p>Add your first restaurant to get started</p>
+    <button class="btn-primary" (click)="openAdd()">Add Restaurant</button>
+  </div>
+
+  <!-- Restaurant Cards Grid -->
+  <div class="cards-grid" *ngIf="!loading && restaurants.length">
+    <div class="resto-card" *ngFor="let r of restaurants | paginate:page:pageSize">
+      <div class="card-img">
+        <img [src]="getImageOrPlaceholder(r)" [alt]="r.name" (error)="$any($event.target).src = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80'">
+        <div class="card-img-overlay">
+          <span class="cuisine-tag" *ngIf="r.cuisine">{{ r.cuisine }}</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="resto-name">{{ r.name }}</h3>
+        <p class="resto-desc" *ngIf="r.description">{{ r.description }}</p>
+        <div class="resto-address">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span>{{ r.address }}</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="act-btn edit" (click)="openEdit(r)" title="Edit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          Edit
+        </button>
+        <button class="act-btn delete" (click)="confirmDelete(r.id)" title="Delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()"></div>
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-header">
+      <h3>{{ editingId ? 'Edit Restaurant' : 'Add Restaurant' }}</h3>
+      <button class="modal-close" (click)="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Restaurant Name *</label>
+          <input type="text" formControlName="name" class="form-control" [class.is-invalid]="hasError('name')" placeholder="e.g. Dhaka Bhoj">
+          <div class="error-msg" *ngIf="hasError('name')">Name is required</div>
+        </div>
+        <div class="form-group">
+          <label>Cuisine Type</label>
+          <input type="text" formControlName="cuisine" class="form-control" placeholder="e.g. Bangladeshi, Deshi">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address *</label>
+        <input type="text" formControlName="address" class="form-control" [class.is-invalid]="hasError('address')" placeholder="Full address">
+        <div class="error-msg" *ngIf="hasError('address')">Address is required</div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea formControlName="description" class="form-control" rows="3" placeholder="Describe your restaurant..."></textarea>
+      </div>
+      <!-- Image upload -->
+      <div class="form-group">
+        <label>Restaurant Image</label>
+        <div class="img-upload-area">
+          <div class="img-preview-wrap" *ngIf="imagePreview">
+            <img [src]="imagePreview" alt="Preview" (error)="imagePreview = ''">
+            <button type="button" class="img-clear-btn" (click)="clearImage()" title="Remove image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="img-actions">
+            <label class="upload-file-btn" for="imgFileInput">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+              </svg>
+              Upload from computer
+              <input type="file" id="imgFileInput" accept="image/*" (change)="onImageSelected($event)" style="display:none">
+            </label>
+            <span class="or-sep">or</span>
+            <input type="url" formControlName="imageUrl" class="form-control url-input"
+                   placeholder="Paste image URL (https://...)"
+                   (input)="onImageUrlChange()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Server-side error -->
+      <div class="server-error" *ngIf="serverError">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+        </svg>
+        {{ serverError }}
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="saving">
+          <span *ngIf="saving" class="spinner-sm"></span>
+          {{ saving ? 'Saving...' : (editingId ? 'Update Restaurant' : 'Create Restaurant') }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Delete Confirm Dialog -->
+  <div class="modal-backdrop" *ngIf="deleteConfirmId" (click)="cancelDelete()"></div>
+  <div class="confirm-dialog" *ngIf="deleteConfirmId">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <h3>Delete Restaurant?</h3>
+    <p>This action cannot be undone. All related data will be removed.</p>
+    <div class="confirm-actions">
+      <button class="btn-ghost" (click)="cancelDelete()">Cancel</button>
+      <button class="btn-danger" (click)="doDelete()" [disabled]="deleting">
+        <span *ngIf="deleting" class="spinner-sm"></span>
+        {{ deleting ? 'Deleting...' : 'Delete' }}
+      </button>
+    </div>
+  </div>
+</div>
+<app-pagination [total]="restaurants.length" [page]="page" [pageSize]="pageSize" (pageChange)="page=$event" (pageSizeChange)="pageSize=$event;page=1"/>
+

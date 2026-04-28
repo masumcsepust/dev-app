@@ -1,0 +1,57 @@
+<div class="assistant-page">
+  <div class="sidebar">
+    <div class="sidebar-title">Quick Topics</div>
+    <button
+      *ngFor="let t of topics"
+      class="topic-btn"
+      (click)="send(t.prompt)"
+      [disabled]="loading">
+      {{ t.label }}
+    </button>
+    <div class="sidebar-divider"></div>
+    <button class="clear-btn" (click)="clear()">🗑 Clear Chat</button>
+  </div>
+
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="header-info">
+        <div class="avatar">🤖</div>
+        <div>
+          <div class="header-name">PharmaAI Assistant</div>
+          <div class="header-sub">Powered by AI · Ask anything about medicines</div>
+        </div>
+      </div>
+      <div class="lang-toggle">
+        <button [class.active]="language==='en'" (click)="switchLang('en')">EN</button>
+        <button [class.active]="language==='bn'" (click)="switchLang('bn')">বাংলা</button>
+      </div>
+    </div>
+
+    <div class="messages">
+      <div *ngFor="let m of messages" class="msg" [class.user]="m.role==='user'" [class.bot]="m.role==='assistant'">
+        <div class="msg-avatar" *ngIf="m.role==='assistant'">🤖</div>
+        <div class="bubble" [innerHTML]="m.content | aiMarkdown"></div>
+        <div class="msg-avatar user-av" *ngIf="m.role==='user'">👤</div>
+      </div>
+      <div class="typing-row" *ngIf="loading">
+        <div class="msg-avatar">🤖</div>
+        <div class="typing-bubble">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <div #msgEnd></div>
+    </div>
+
+    <div class="input-row">
+      <input
+        type="text"
+        [(ngModel)]="input"
+        [placeholder]="language === 'bn' ? 'ওষুধ, ডোজ, পার্শ্বপ্রতিক্রিয়া সম্পর্কে জিজ্ঞেস করুন…' : 'Type your question about medicines, dosages, side effects…'"
+        (keyup.enter)="send()"
+        [disabled]="loading">
+      <button class="btn-primary send-btn" (click)="send()" [disabled]="loading || !input.trim()">
+        Send →
+      </button>
+    </div>
+  </div>
+</div>

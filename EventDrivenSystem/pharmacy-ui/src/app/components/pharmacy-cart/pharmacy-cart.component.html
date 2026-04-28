@@ -1,0 +1,54 @@
+<div class="page container">
+  <div class="page-title">Shopping Cart</div>
+
+  <ng-container *ngIf="cart$ | async as cart">
+    <div class="empty card" *ngIf="cart.length === 0">
+      <div class="empty-icon">🛒</div>
+      <p>Your cart is empty. Start adding medicines!</p>
+      <a routerLink="/medicines" class="btn-primary">Browse Medicines</a>
+    </div>
+
+    <div class="cart-layout" *ngIf="cart.length > 0">
+
+      <div class="cart-items">
+        <div class="cart-row" *ngFor="let item of cart">
+          <div class="item-img">
+            <img *ngIf="item.medicine.imageUrl" [src]="'http://localhost:5091' + item.medicine.imageUrl" [alt]="item.medicine.name">
+            <span *ngIf="!item.medicine.imageUrl">💊</span>
+          </div>
+          <div class="item-info">
+            <div class="item-name">{{ item.medicine.name }}</div>
+            <div class="item-generic">{{ item.medicine.genericName }}</div>
+            <div class="item-price">৳ {{ item.medicine.price | number:'1.2-2' }} each</div>
+          </div>
+          <div class="qty-ctrl">
+            <button (click)="dec(item)">−</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="inc(item)">+</button>
+          </div>
+          <div class="item-sub">৳ {{ item.medicine.price * item.quantity | number:'1.2-2' }}</div>
+          <button class="remove-btn" (click)="remove(item.medicine.id)" title="Remove">✕</button>
+        </div>
+      </div>
+
+      <div class="cart-summary card">
+        <h2>Order Summary</h2>
+        <div class="sum-row">
+          <span>Subtotal ({{ cart.length }} item{{ cart.length > 1 ? 's' : '' }})</span>
+          <span>৳ {{ total | number:'1.2-2' }}</span>
+        </div>
+        <div class="sum-row">
+          <span>Delivery</span>
+          <span class="free-badge">FREE</span>
+        </div>
+        <div class="sum-row total">
+          <span>Total</span>
+          <span>৳ {{ total | number:'1.2-2' }}</span>
+        </div>
+        <a routerLink="/checkout" class="btn-primary checkout-btn">Proceed to Checkout →</a>
+        <button class="btn-ghost clear-btn" (click)="clear()">🗑 Clear Cart</button>
+      </div>
+
+    </div>
+  </ng-container>
+</div>

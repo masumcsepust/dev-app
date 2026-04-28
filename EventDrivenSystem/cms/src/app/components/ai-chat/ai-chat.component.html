@@ -1,0 +1,72 @@
+<!-- Floating Button -->
+<button class="chat-fab" (click)="toggle()" [class.open]="isOpen" aria-label="AI Chat Assistant">
+  <span class="fab-icon" *ngIf="!isOpen">🤖</span>
+  <span class="fab-icon" *ngIf="isOpen">✕</span>
+  <span class="unread-badge" *ngIf="!isOpen && unread > 0">{{ unread }}</span>
+</button>
+
+<!-- Chat Window -->
+<div class="chat-window" [class.visible]="isOpen">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="chat-header-avatar">🤖</div>
+      <div class="chat-header-info">
+        <span class="chat-header-name">DeshiFood AI</span>
+        <span class="chat-header-status">Powered by Claude</span>
+      </div>
+    </div>
+    <div class="chat-header-actions">
+      <a routerLink="/portal/ai-assistant" (click)="toggle()" class="expand-btn" title="Open full chat">⤢</a>
+      <button class="icon-btn" (click)="clearChat()" title="New conversation">↺</button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages">
+    <div
+      *ngFor="let msg of history"
+      class="message-row"
+      [class.user-row]="msg.role === 'user'"
+      [class.ai-row]="msg.role === 'assistant'"
+    >
+      <div class="avatar-sm" *ngIf="msg.role === 'assistant'">🤖</div>
+      <div class="bubble" [class.user-bubble]="msg.role === 'user'" [class.ai-bubble]="msg.role === 'assistant'">
+        <span *ngIf="msg.role === 'user'">{{ msg.content }}</span>
+        <span *ngIf="msg.role === 'assistant'" [innerHTML]="msg.content | aiMarkdown"></span>
+      </div>
+    </div>
+
+    <!-- Suggestion chips (shown only for welcome message) -->
+    <div class="suggestions" *ngIf="showSuggestions">
+      <button *ngFor="let s of suggestions" class="sugg" (click)="ask(s)">{{ s }}</button>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="message-row ai-row" *ngIf="loading">
+      <div class="avatar-sm">🤖</div>
+      <div class="bubble ai-bubble typing">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div #messagesEnd></div>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-area">
+    <textarea
+      class="chat-input"
+      rows="1"
+      placeholder="Ask about menu, dishes, reservations…"
+      [(ngModel)]="userInput"
+      (keydown)="onKeyDown($event)"
+      [disabled]="loading"
+    ></textarea>
+    <button class="send-btn" (click)="send()" [disabled]="!userInput.trim() || loading">
+      ➤
+    </button>
+  </div>
+
+</div>

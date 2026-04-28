@@ -1,0 +1,112 @@
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">✅ Bangladesh's Most Trusted Digital Pharmacy</div>
+      <h1>Your Health,<br><span>Our Priority</span></h1>
+      <p class="hero-desc">Browse genuine medicines, submit prescriptions digitally, and get instant answers from PharmaAI — all delivered to your door.</p>
+      <div class="hero-actions">
+        <a routerLink="/medicines" class="btn-primary btn-lg">Browse Medicines</a>
+        <a routerLink="/ai-assistant" class="btn-outline btn-lg">🤖 Ask PharmaAI</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">15,000+</div>
+          <div class="hero-stat-label">Happy Patients</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">80+</div>
+          <div class="hero-stat-label">Doctor Endorsements</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">4.9 ★</div>
+          <div class="hero-stat-label">Average Rating</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">💊</div>
+  </div>
+</section>
+
+<!-- Feature Pills -->
+<div class="features-row">
+  <div class="container features-inner">
+    <div class="feat-pill"><div class="feat-pill-icon">🚀</div> Same-day delivery</div>
+    <div class="feat-pill"><div class="feat-pill-icon">🔒</div> 100% genuine medicines</div>
+    <div class="feat-pill"><div class="feat-pill-icon">🤖</div> 24/7 AI assistant</div>
+    <div class="feat-pill"><div class="feat-pill-icon">📋</div> Digital prescriptions</div>
+    <div class="feat-pill"><div class="feat-pill-icon">💳</div> Easy payments</div>
+  </div>
+</div>
+
+<div class="page container">
+
+  <!-- Categories -->
+  <section class="categories-section" *ngIf="categories.length">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Browse by Category</div>
+        <div class="section-sub">Find medicines by type</div>
+      </div>
+      <a routerLink="/medicines" class="btn-ghost btn-sm">View all →</a>
+    </div>
+    <div class="categories-wrap">
+      <a *ngFor="let c of categories" [routerLink]="['/medicines']" [queryParams]="{categoryId: c.id}" class="cat-chip">
+        🗂️ {{ c.name }}
+      </a>
+    </div>
+  </section>
+
+  <!-- Trust Strip -->
+  <div class="trust-strip">
+    <div class="trust-text">
+      <h2>Trusted by 80+ Specialist Doctors</h2>
+      <p>Cardiologists, paediatricians, neurologists and more across Bangladesh recommend PharmaStore.</p>
+      <a routerLink="/reviews" class="btn-outline trust-link">Read Doctor Reviews →</a>
+    </div>
+    <div class="trust-avatars">
+      <span>👩‍⚕️</span><span>👨‍⚕️</span><span>👩‍⚕️</span><span>👨‍⚕️</span><span>👩‍⚕️</span>
+    </div>
+  </div>
+
+  <!-- Featured Medicines -->
+  <section class="featured-section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Featured Medicines</div>
+        <div class="section-sub">Popular choices, always in stock</div>
+      </div>
+      <a routerLink="/medicines" class="btn-ghost btn-sm">View all →</a>
+    </div>
+
+    <div class="loading" *ngIf="loading">Loading medicines…</div>
+
+    <div class="meds-grid" *ngIf="!loading">
+      <div class="med-card" *ngFor="let m of featured">
+        <div class="med-img">
+          <img *ngIf="m.imageUrl" [src]="'http://localhost:5091' + m.imageUrl" [alt]="m.name">
+          <span *ngIf="!m.imageUrl">💊</span>
+          <span class="med-rx-tag" *ngIf="m.requiresPrescription">Rx</span>
+        </div>
+        <div class="med-body">
+          <span class="badge badge-gray med-form-badge">{{ m.form }}</span>
+          <div class="med-name">{{ m.name }}</div>
+          <div class="med-generic">{{ m.genericName }}</div>
+          <div class="med-price">৳ {{ m.price | number:'1.2-2' }}</div>
+          <div class="med-actions">
+            <a [routerLink]="['/medicines', m.id]" class="btn-ghost">Details</a>
+            <button class="btn-primary" (click)="addToCart(m)"
+              [disabled]="m.requiresPrescription || !m.isAvailable">
+              {{ m.requiresPrescription ? 'Rx Only' : '+ Cart' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="see-all-wrap">
+      <a routerLink="/medicines" class="btn-outline">View All Medicines →</a>
+    </div>
+  </section>
+
+</div>

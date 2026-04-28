@@ -1,0 +1,45 @@
+.page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 1.25rem; }
+
+.tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+.tabs button {
+  background: none; border: none; border-radius: 0;
+  padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 500; color: var(--text-muted);
+  border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer;
+}
+.tabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.tab-content { max-width: 600px; }
+.tab-content h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+
+.success-msg { text-align: center; padding: 2rem 1rem; }
+.success-msg h3 { font-size: 1.2rem; margin: 0.75rem 0 0.5rem; }
+.success-msg p { color: var(--text-muted); margin-bottom: 1rem; }
+
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+.field textarea { resize: vertical; }
+
+.upload-area {
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  padding: 1rem; cursor: pointer; text-align: center; min-height: 120px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s;
+}
+.upload-area:hover { border-color: var(--primary); }
+.upload-area img { max-height: 160px; max-width: 100%; object-fit: contain; }
+.upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+.upload-placeholder span:first-child { font-size: 2rem; }
+
+.error { background: #fee2e2; color: var(--danger); border-radius: 6px; padding: 0.6rem 0.9rem; font-size: 0.85rem; margin-bottom: 0.75rem; }
+.submit-btn { width: 100%; padding: 0.8rem; font-size: 1rem; }
+
+.search-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+.search-row input { flex: 1; }
+
+.rx-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+.rx-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; }
+.rx-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 0.3rem; }
+.rx-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1rem; }
+.rx-notes { font-size: 0.85rem; margin-top: 0.4rem; }
+.rx-img-link { font-size: 0.8rem; color: var(--primary); margin-top: 0.4rem; display: inline-block; }
+.rx-img-link:hover { text-decoration: underline; }

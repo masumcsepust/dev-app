@@ -1,0 +1,205 @@
+<div class="dashboard-wrap">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading dashboard...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && stats">
+
+    <!-- ─── KPI Cards ─────────────────────────────────────────── -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-orange">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ stats.restaurants.length }}</span>
+          <span class="kpi-label">Restaurants</span>
+        </div>
+        <a routerLink="/cms/restaurants" class="kpi-link">View all →</a>
+      </div>
+
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ stats.totalItems }}</span>
+          <span class="kpi-label">Menu Items</span>
+        </div>
+        <a routerLink="/cms/menu-items" class="kpi-link">View all →</a>
+      </div>
+
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ stats.totalTables }}</span>
+          <span class="kpi-label">Tables</span>
+        </div>
+        <a routerLink="/cms/tables" class="kpi-link">View all →</a>
+      </div>
+
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ stats.totalReservations }}</span>
+          <span class="kpi-label">Reservations</span>
+        </div>
+        <a routerLink="/cms/reservations" class="kpi-link">View all →</a>
+      </div>
+    </div>
+
+    <!-- ─── Table Status Cards ────────────────────────────────── -->
+    <div class="section-header">
+      <h3 class="section-title">Table Status Overview</h3>
+      <a routerLink="/cms/tables" class="section-link">Manage Tables →</a>
+    </div>
+    <div class="status-grid">
+      <div class="status-card available">
+        <div class="status-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="status-body">
+          <span class="status-count">{{ stats.tableStats.available }}</span>
+          <span class="status-label">Available</span>
+        </div>
+        <div class="status-bar" [style.width.%]="stats.totalTables ? (stats.tableStats.available / stats.totalTables * 100) : 0"></div>
+      </div>
+
+      <div class="status-card occupied">
+        <div class="status-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <div class="status-body">
+          <span class="status-count">{{ stats.tableStats.occupied }}</span>
+          <span class="status-label">Occupied</span>
+        </div>
+        <div class="status-bar" [style.width.%]="stats.totalTables ? (stats.tableStats.occupied / stats.totalTables * 100) : 0"></div>
+      </div>
+
+      <div class="status-card reserved">
+        <div class="status-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="status-body">
+          <span class="status-count">{{ stats.tableStats.reserved }}</span>
+          <span class="status-label">Reserved</span>
+        </div>
+        <div class="status-bar" [style.width.%]="stats.totalTables ? (stats.tableStats.reserved / stats.totalTables * 100) : 0"></div>
+      </div>
+
+      <div class="status-card maintenance">
+        <div class="status-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div class="status-body">
+          <span class="status-count">{{ stats.tableStats.maintenance }}</span>
+          <span class="status-label">Maintenance</span>
+        </div>
+        <div class="status-bar" [style.width.%]="stats.totalTables ? (stats.tableStats.maintenance / stats.totalTables * 100) : 0"></div>
+      </div>
+    </div>
+
+    <!-- ─── Bottom Grid (Reservations + Popular Items) ────────── -->
+    <div class="bottom-grid">
+
+      <!-- Recent Reservations -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Recent Reservations</h3>
+          <a routerLink="/cms/reservations" class="section-link">View all →</a>
+        </div>
+        <div class="card-body">
+          <div *ngIf="!stats.recentReservations.length" class="empty-state">
+            No reservations yet
+          </div>
+          <table class="data-table" *ngIf="stats.recentReservations.length">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Table</th>
+                <th>Date & Time</th>
+                <th>Guests</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of stats.recentReservations">
+                <td>
+                  <div class="customer-cell">
+                    <div class="customer-avatar">{{ r.customerName[0] }}</div>
+                    <div>
+                      <div class="customer-name">{{ r.customerName }}</div>
+                      <div class="customer-phone">{{ r.customerPhone }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Table {{ r.table?.tableNumber ?? r.tableId }}</td>
+                <td>
+                  <div>{{ formatDate(r.reservationDateTime) }}</div>
+                  <div class="text-muted" style="font-size:0.75rem">{{ formatTime(r.reservationDateTime) }}</div>
+                </td>
+                <td>{{ r.guestsCount }}</td>
+                <td><span class="badge" [ngClass]="getStatusClass(r.status)">{{ r.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Popular Items -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Menu Highlights</h3>
+          <a routerLink="/cms/menu-items" class="section-link">View all →</a>
+        </div>
+        <div class="card-body">
+          <div *ngIf="!stats.popularItems.length" class="empty-state">
+            No menu items yet
+          </div>
+          <div class="items-grid">
+            <div class="item-card" *ngFor="let item of stats.popularItems">
+              <div class="item-img">
+                <img [src]="item.imageUrl || getImageFallback(item)" [alt]="item.name" (error)="$any($event.target).src = getImageFallback(item)">
+                <span class="item-avail" [class.unavail]="!item.isAvailable">
+                  {{ item.isAvailable ? 'Available' : 'Unavailable' }}
+                </span>
+              </div>
+              <div class="item-info">
+                <span class="item-name">{{ item.name }}</span>
+                <span class="item-price">{{ formatPrice(item.price) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+</div>

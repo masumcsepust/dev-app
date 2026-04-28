@@ -1,0 +1,45 @@
+<div class="page container">
+  <h1 class="page-title">My Orders</h1>
+
+  <div class="search-box card">
+    <p>Enter your phone number to view your orders:</p>
+    <div class="search-row">
+      <input type="tel" [(ngModel)]="phone" placeholder="+880…" (keyup.enter)="search()">
+      <button class="btn-primary" (click)="search()">View Orders</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <div *ngIf="searched && !loading">
+    <div class="empty" *ngIf="orders.length === 0">No orders found for this number.</div>
+
+    <div class="order-card card" *ngFor="let o of orders">
+      <div class="order-header" (click)="toggle(o.id)">
+        <div class="order-meta">
+          <span class="order-id">#{{ o.id }}</span>
+          <span class="badge" [ngClass]="statusClass(o.status)">{{ o.status }}</span>
+        </div>
+        <div class="order-right">
+          <span class="order-total">৳ {{ o.totalAmount | number:'1.2-2' }}</span>
+          <span class="order-date">{{ o.createdAt | date:'mediumDate' }}</span>
+          <span class="expand-icon">{{ expanded.has(o.id) ? '▲' : '▼' }}</span>
+        </div>
+      </div>
+      <div class="order-items" *ngIf="expanded.has(o.id)">
+        <div class="order-addr">📍 {{ o.customerAddress }}</div>
+        <table class="items-table">
+          <thead><tr><th>Medicine</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of o.items">
+              <td>{{ item.medicineName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>৳ {{ item.unitPrice | number:'1.2-2' }}</td>
+              <td>৳ {{ item.subtotal | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

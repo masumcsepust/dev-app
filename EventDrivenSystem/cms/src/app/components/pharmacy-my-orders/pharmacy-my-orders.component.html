@@ -1,0 +1,47 @@
+<div class="page-wrap">
+  <h1>Track My Order</h1>
+
+  <div class="lookup-card">
+    <p>Enter your order ID to track its status.</p>
+    <div class="lookup-row">
+      <input type="number" [(ngModel)]="orderId" placeholder="Order ID e.g. 42"
+        (keydown.enter)="lookup()" />
+      <button (click)="lookup()" [disabled]="loading">
+        {{ loading ? 'Looking up…' : 'Track Order' }}
+      </button>
+    </div>
+    <div class="error-msg" *ngIf="error">{{ error }}</div>
+  </div>
+
+  <div class="order-card" *ngIf="order">
+    <div class="order-header">
+      <div>
+        <h2>Order #{{ order.id }}</h2>
+        <p class="order-date">Placed: {{ order.createdAt | date:'medium' }}</p>
+      </div>
+      <span class="status-badge" [ngClass]="statusClass(order.status)">{{ order.status }}</span>
+    </div>
+
+    <div class="order-info">
+      <div class="info-item"><span class="label">Customer</span><span>{{ order.customerName }}</span></div>
+      <div class="info-item"><span class="label">Phone</span><span>{{ order.customerPhone }}</span></div>
+      <div class="info-item"><span class="label">Email</span><span>{{ order.customerEmail }}</span></div>
+      <div class="info-item"><span class="label">Address</span><span>{{ order.deliveryAddress }}</span></div>
+      <div class="info-item" *ngIf="order.notes"><span class="label">Notes</span><span>{{ order.notes }}</span></div>
+    </div>
+
+    <h3>Items</h3>
+    <div class="order-items">
+      <div class="order-item" *ngFor="let item of order.items">
+        <span>{{ item.medicineName }}</span>
+        <span>× {{ item.quantity }}</span>
+        <span>৳ {{ item.unitPrice | number:'1.2-2' }}</span>
+        <span class="item-subtotal">৳ {{ item.unitPrice * item.quantity | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="order-total">
+      <strong>Total: ৳ {{ order.totalAmount | number:'1.2-2' }}</strong>
+    </div>
+  </div>
+</div>

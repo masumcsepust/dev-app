@@ -1,10 +1,12 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantService.Data;
 using RestaurantService.DTOs;
+using RestaurantService.Models;
 using RestaurantService.Events;
 using RestaurantService.Messaging;
-using RestaurantService.Models;
 
 namespace RestaurantService.Controllers
 {
@@ -36,19 +38,26 @@ namespace RestaurantService.Controllers
             return Ok(restaurant);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
-            var owner = await _context.Users.FindAsync(dto.OwnerId);
-            if (owner == null || owner.UserType != "CMS")
-                return BadRequest("Invalid Owner or Owner is not CMS role.");
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (role != "CMS")
+                return Forbid();
+
+            var ownerIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(ownerIdClaim, out var ownerId))
+                return Unauthorized();
 
             var restaurant = new Restaurant
             {
                 Name = dto.Name,
-                Description = dto.Description,
+                Cuisine = dto.Cuisine ?? string.Empty,
+                ImageUrl = dto.ImageUrl ?? string.Empty,
+                Description = dto.Description ?? string.Empty,
                 Address = dto.Address,
-                OwnerId = dto.OwnerId,
+                OwnerId = ownerId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -62,54 +71,40 @@ namespace RestaurantService.Controllers
                 RestaurantId = restaurant.Id,
                 Name = restaurant.Name,
                 Description = restaurant.Description,
-                OwnerId = restaurant.OwnerId,
+                OwnerId = ownerId,
                 EventType = "Created"
             }, "restaurant.created");
 
             return CreatedAtAction(nameof(GetRestaurant), new { id = restaurant.Id }, restaurant);
         }
 
-        [HttpGet("{restaurantId}/menu")]
-        public async Task<IActionResult> GetMenu(int restaurantId)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRestaurant(int id, [FromBody] UpdateRestaurantDto dto)
         {
-            var menu = await _context.MenuItems.Where(m => m.RestaurantId == restaurantId).ToListAsync();
-            return Ok(menu);
-        }
+            var restaurant = await _context.Restaurants.FindAsync(id);
+            if (restaurant == null) return NotFound();
 
-        [HttpPost("{restaurantId}/menu")]
-        public async Task<IActionResult> AddMenuItem(int restaurantId, [FromBody] CreateMenuItemDto dto)
-        {
-            if (restaurantId != dto.RestaurantId) return BadRequest();
+            restaurant.Name = dto.Name;
+            restaurant.Cuisine = dto.Cuisine ?? string.Empty;
+            restaurant.ImageUrl = dto.ImageUrl ?? string.Empty;
+            restaurant.Description = dto.Description ?? string.Empty;
+            restaurant.Address = dto.Address;
+            restaurant.UpdatedAt = DateTime.UtcNow;
 
-            var restaurant = await _context.Restaurants.FindAsync(restaurantId);
-            if (restaurant == null) return NotFound("Restaurant not found");
-
-            var menuItem = new MenuItem
-            {
-                RestaurantId = dto.RestaurantId,
-                Name = dto.Name,
-                Description = dto.Description,
-                Price = dto.Price,
-                IsAvailable = dto.IsAvailable,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            _context.MenuItems.Add(menuItem);
             await _context.SaveChangesAsync();
-
-            // Publish event
-            await _messagePublisher.PublishEventAsync(new MenuEvent
-            {
-                MenuItemId = menuItem.Id,
-                RestaurantId = menuItem.RestaurantId,
-                Name = menuItem.Name,
-                Price = menuItem.Price,
-                IsAvailable = menuItem.IsAvailable,
-                EventType = "MenuUpdated"
-            }, "menu.updated");
-
-            return Ok(menuItem);
+            return Ok(restaurant);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRestaurant(int id)
+        {
+            var restaurant = await _context.Restaurants.FindAsync(id);
+            if (restaurant == null) return NotFound();
+
+            _context.Restaurants.Remove(restaurant);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
     }
 }

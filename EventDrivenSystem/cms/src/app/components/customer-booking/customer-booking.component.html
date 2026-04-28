@@ -1,0 +1,186 @@
+<!-- Loading -->
+<div class="spinner-page" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Loading booking details…</p>
+</div>
+
+<!-- ── Success State ── -->
+<div class="success-page" *ngIf="!loading && success">
+  <div class="success-card">
+    <div class="success-icon">&#10003;</div>
+    <h2>Reservation Confirmed!</h2>
+    <p>Your table has been successfully booked at <strong>{{ restaurant?.name }}</strong>.</p>
+    <p class="success-sub">You'll receive a confirmation at {{ form.get('customerEmail')?.value }}.</p>
+    <div class="success-actions">
+      <button class="btn-primary" (click)="goToReservations()">View My Reservations</button>
+      <a [routerLink]="['/portal/restaurant', restaurantId]" class="btn-outline">Back to Menu</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Booking Form ── -->
+<div *ngIf="!loading && !success">
+
+  <!-- Page Banner -->
+  <div class="page-banner">
+    <div class="page-container">
+      <a [routerLink]="['/portal/restaurant', restaurantId]" class="back-link">&#8592; Back to Menu</a>
+      <h1 class="page-title">Book a Table</h1>
+      <p class="page-sub" *ngIf="restaurant">Reserve your spot at <strong>{{ restaurant.name }}</strong></p>
+    </div>
+  </div>
+
+  <div class="page-container form-layout">
+
+    <!-- Left: Form -->
+    <div class="form-panel">
+      <div class="error-banner" *ngIf="error">
+        <span>&#9888;</span> {{ error }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- Section: Your Details -->
+        <div class="form-section">
+          <h3 class="section-label">Your Details</h3>
+          <div class="field-row">
+            <div class="field">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" formControlName="customerName" placeholder="e.g. Rahim Ahmed" />
+              <span class="field-err" *ngIf="form.get('customerName')?.touched && form.get('customerName')?.invalid">
+                Name is required
+              </span>
+            </div>
+            <div class="field">
+              <label>Phone Number <span class="req">*</span></label>
+              <input type="tel" formControlName="customerPhone" placeholder="e.g. 01711-000000" />
+              <span class="field-err" *ngIf="form.get('customerPhone')?.touched && form.get('customerPhone')?.invalid">
+                Phone is required
+              </span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" formControlName="customerEmail" placeholder="e.g. you@example.com" />
+            <span class="field-err" *ngIf="form.get('customerEmail')?.touched && form.get('customerEmail')?.invalid">
+              Valid email is required
+            </span>
+          </div>
+        </div>
+
+        <!-- Section: Reservation Details -->
+        <div class="form-section">
+          <h3 class="section-label">Reservation Details</h3>
+          <div class="field-row">
+            <div class="field">
+              <label>Date <span class="req">*</span></label>
+              <input type="date" formControlName="reservationDate" [min]="minDate" />
+              <span class="field-err" *ngIf="form.get('reservationDate')?.touched && form.get('reservationDate')?.invalid">
+                Date is required
+              </span>
+            </div>
+            <div class="field">
+              <label>Time <span class="req">*</span></label>
+              <input type="time" formControlName="reservationTime" />
+              <span class="field-err" *ngIf="form.get('reservationTime')?.touched && form.get('reservationTime')?.invalid">
+                Time is required
+              </span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Number of Guests <span class="req">*</span></label>
+            <input type="number" formControlName="guestsCount" min="1" max="20" />
+            <span class="field-hint">Available tables update based on guest count</span>
+          </div>
+        </div>
+
+        <!-- Section: Select Table -->
+        <div class="form-section">
+          <h3 class="section-label">Select Table <span class="req">*</span></h3>
+
+          <div class="no-tables" *ngIf="!availableTables.length">
+            <span>&#128683;</span>
+            <p>No available tables match your guest count. Try fewer guests or a different time.</p>
+          </div>
+
+          <div class="table-grid" *ngIf="availableTables.length">
+            <label
+              class="table-option"
+              *ngFor="let t of availableTables"
+              [class.selected]="form.get('tableId')?.value == t.id"
+            >
+              <input type="radio" formControlName="tableId" [value]="t.id" hidden />
+              <div class="table-icon">&#9698;</div>
+              <div class="table-info">
+                <strong>Table {{ t.tableNumber }}</strong>
+                <span>{{ getAreaLabel(t.area) }}</span>
+                <span class="table-cap">&#128101; Up to {{ t.seatingCapacity }} guests</span>
+              </div>
+              <span class="table-check" *ngIf="form.get('tableId')?.value == t.id">&#10003;</span>
+            </label>
+          </div>
+          <span class="field-err" *ngIf="form.get('tableId')?.touched && form.get('tableId')?.invalid">
+            Please select a table
+          </span>
+        </div>
+
+        <!-- Section: Special Request -->
+        <div class="form-section">
+          <h3 class="section-label">Special Request <span class="optional">(optional)</span></h3>
+          <textarea
+            formControlName="specialRequest"
+            rows="3"
+            placeholder="Dietary requirements, seating preferences, occasion notes…"
+          ></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-submit" [disabled]="submitting">
+          <span *ngIf="!submitting">&#128197; Confirm Reservation</span>
+          <span *ngIf="submitting" class="loading-dots">Booking<span>.</span><span>.</span><span>.</span></span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Right: Summary -->
+    <aside class="summary-panel" *ngIf="restaurant">
+      <div class="summary-card">
+        <h3 class="summary-title">Reservation Summary</h3>
+        <div class="summary-row">
+          <span>&#127869;</span>
+          <div>
+            <strong>{{ restaurant.name }}</strong>
+            <p>{{ restaurant.cuisine }}</p>
+          </div>
+        </div>
+        <div class="summary-row">
+          <span>&#128205;</span>
+          <div>
+            <strong>Location</strong>
+            <p>{{ restaurant.address }}</p>
+          </div>
+        </div>
+        <div class="summary-row" *ngIf="form.get('reservationDate')?.value">
+          <span>&#128197;</span>
+          <div>
+            <strong>Date &amp; Time</strong>
+            <p>{{ form.get('reservationDate')?.value }} at {{ form.get('reservationTime')?.value || '—' }}</p>
+          </div>
+        </div>
+        <div class="summary-row" *ngIf="form.get('guestsCount')?.value">
+          <span>&#128101;</span>
+          <div>
+            <strong>Guests</strong>
+            <p>{{ form.get('guestsCount')?.value }} {{ form.get('guestsCount')?.value === 1 ? 'person' : 'people' }}</p>
+          </div>
+        </div>
+        <div class="summary-note">
+          <span>&#8505;</span>
+          Free cancellation up to 2 hours before your reservation.
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>

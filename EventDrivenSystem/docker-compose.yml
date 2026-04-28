@@ -1,0 +1,252 @@
+services:
+
+  # ── Infrastructure ──────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: eds_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "12345678"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eds_net
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: eds_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: "12345"
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eds_net
+
+  # ── Backend Services ────────────────────────────────────────────────────────
+
+  user-service:
+    build:
+      context: .
+      dockerfile: UserService/Dockerfile
+    container_name: eds_user_service
+    ports:
+      - "5018:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=user_db;Username=postgres;Password=12345678;"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: admin
+      RabbitMq__Password: "12345"
+      Jwt__Key: "SuperSecretKeyForJwtAuthenticationInThisDemoAppThatNeedsToBeAtLeast32BytesLong!"
+      Jwt__Issuer: UserService
+      Jwt__Audience: UserClient
+      Jwt__AccessTokenExpirationMinutes: "43200"
+      Jwt__RefreshTokenExpiryDays: "365"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  restaurant-service:
+    build:
+      context: ./RestaurantService
+      dockerfile: Dockerfile
+    container_name: eds_restaurant_service
+    ports:
+      - "5043:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=restaurant_db;Username=postgres;Password=12345678;"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: admin
+      RabbitMq__Password: "12345"
+      Jwt__Key: "SuperSecretKeyForJwtAuthenticationInThisDemoAppThatNeedsToBeAtLeast32BytesLong!"
+      Jwt__Issuer: UserService
+      Jwt__Audience: UserClient
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  order-service:
+    build:
+      context: ./OrderService
+      dockerfile: Dockerfile
+    container_name: eds_order_service
+    ports:
+      - "5079:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=order_db;Username=postgres;Password=12345678;"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: admin
+      RabbitMq__Password: "12345"
+      PharmacyService__BaseUrl: "http://pharmacy-service:8080/"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  gateway-service:
+    build:
+      context: ./GatewayService
+      dockerfile: Dockerfile
+    container_name: eds_gateway_service
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ReverseProxy__Clusters__order-cluster__Destinations__order-service__Address: "http://order-service:8080/"
+      ReverseProxy__Clusters__pharmacy-cluster__Destinations__pharmacy-service__Address: "http://pharmacy-service:8080/"
+      ReverseProxy__Clusters__restaurant-cluster__Destinations__restaurant-service__Address: "http://restaurant-service:8080/"
+      ReverseProxy__Clusters__user-cluster__Destinations__user-service__Address: "http://user-service:8080/"
+    depends_on:
+      - order-service
+      - pharmacy-service
+      - restaurant-service
+      - user-service
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  notification-service:
+    build:
+      context: ./NotificationService
+      dockerfile: Dockerfile
+    container_name: eds_notification_service
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: admin
+      RabbitMq__Password: "12345"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  consumer-service:
+    build:
+      context: ./ConsumerService
+      dockerfile: Dockerfile
+    container_name: eds_consumer_service
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=dev_consumer_db;Username=postgres;Password=12345678;"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: admin
+      RabbitMq__Password: "12345"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  pharmacy-service:
+    build:
+      context: ./PharmacyService
+      dockerfile: Dockerfile
+    container_name: eds_pharmacy_service
+    ports:
+      - "5091:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pharmacy_db;Username=postgres;Password=12345678;"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: admin
+      RabbitMq__Password: "12345"
+      Jwt__Key: "SuperSecretKeyForJwtAuthenticationInThisDemoAppThatNeedsToBeAtLeast32BytesLong!"
+      Jwt__Issuer: UserService
+      Jwt__Audience: UserClient
+      Anthropic__ApiKey: ""
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  # ── Frontend ─────────────────────────────────────────────────────────────────
+
+  cms:
+    build:
+      context: ./cms
+      dockerfile: Dockerfile
+    container_name: eds_cms
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway-service
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+  pharmacy-ui:
+    build:
+      context: ./pharmacy-ui
+      dockerfile: Dockerfile
+    container_name: eds_pharmacy_ui
+    ports:
+      - "4300:80"
+    depends_on:
+      - gateway-service
+    restart: unless-stopped
+    networks:
+      - eds_net
+
+# ── Volumes & Networks ────────────────────────────────────────────────────────
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+
+networks:
+  eds_net:
+    driver: bridge
